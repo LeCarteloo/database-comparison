@@ -1,0 +1,5 @@
+# Composer packages
+vendor
+
+# Env variables
+.env

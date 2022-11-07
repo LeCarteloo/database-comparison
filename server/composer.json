@@ -1,0 +1,6 @@
+{
+    "require": {
+        "mongodb/mongodb": "^1.13",
+        "vlucas/phpdotenv": "^5.5"
+    }
+}
