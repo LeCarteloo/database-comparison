@@ -31,7 +31,9 @@ services:
     ports:
       - 8080:8080
     environment:
+      POSTGRES_USER: root
       POSTGRES_PASSWORD: root
+      POSTGRES_DB: postgres_base
 
   redis:
     image: redis
