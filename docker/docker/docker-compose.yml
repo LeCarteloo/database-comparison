@@ -7,12 +7,39 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=mysqlbase
+      - MYSQL_DATABASE=mysql_base
       - MYSQL_PASSWORD=root
       - MYSQL_USER=root
     ports:
       - 3307:3306
     command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
-  php:
-    image: php
-    container_name: ${COMPOSE_PROJECT_NAME}_php
+  
+  mongo:
+    image: mongo
+    container_name: ${COMPOSE_PROJECT_NAME}_mongo
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
+  postgres:
+    image: postgres
+    container_name: ${COMPOSE_PROJECT_NAME}_postgres
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      POSTGRES_PASSWORD: root
+
+  redis:
+    image: redis
+    container_name: ${COMPOSE_PROJECT_NAME}_redis
+    restart: always
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'
