@@ -45,3 +45,11 @@ services:
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     ports:
       - '6379:6379'
+      
+  clickhouse:
+    image: yandex/clickhouse-server
+    container_name: ${COMPOSE_PROJECT_NAME}_clickhouse
+    restart: always
+    ports:
+      - '8123:8123'
+      
