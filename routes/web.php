@@ -19,3 +19,5 @@ Route::get('/', function () {
 });
 
 Route::get('/redis', [RedisController::class, 'testRedis']);
+
+Route::get('/test', [App\Http\Controllers\TestDatabasesController::class, 'index']);
