@@ -91,8 +91,8 @@ return [
             'host'     => 'localhost',
             'port'     => 8081,
             'database' => 'db',
-            'username' => 'root',
-            'password' => 'root',
+            'username' => '',
+            'password' => '',
             'options'  => []
         ],
     ],
