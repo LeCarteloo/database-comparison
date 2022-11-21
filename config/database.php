@@ -35,22 +35,14 @@ return [
 
     'connections' => [
 
-        'sqlite' => [
-            'driver' => 'sqlite',
-            'url' => env('DATABASE_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
-            'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-        ],
-
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => 'localhost',
+            'port' => '3307',
+            'database' => 'mysql_base',
+            'username' => 'root',
+            'password' => 'root',
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -66,7 +58,7 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
+            'host' => '127.0.0.1',
             'port' => '5432',
             'database' => 'pg_base',
             'username' => 'root',
@@ -78,26 +70,29 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        'sqlsrv' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
+        'clickhouse' => [
+            'driver' => 'clickhouse',
+            'host' => 'localhost',
+            'port' => '8123',
+            'database' => 'default',
+            'username' => 'default',
+            'password' => '',
+            'timeout_connect' => 2,
+            'timeout_query' => 2,
+            'https' => (bool)env('CLICKHOUSE_HTTPS', null),
+            'retries' => env('CLICKHOUSE_RETRIES', 0),
+            'settings' => [ // optional
+                'max_partitions_per_insert_block' => 300,
+            ],
         ],
 
         'mongodb' => [
             'driver'   => 'mongodb',
-            'host'     => env('MONGO_DB_HOST', 'localhost'),
-            'port'     => env('MONGO_DB_PORT', 27017),
-            'database' => env('MONGO_DB_DATABASE'),
-            'username' => env('MONGO_DB_USERNAME'),
-            'password' => env('MONGO_DB_PASSWORD'),
+            'host'     => 'localhost',
+            'port'     => 8081,
+            'database' => 'db',
+            'username' => 'root',
+            'password' => 'root',
             'options'  => []
         ],
     ],
@@ -114,43 +109,5 @@ return [
     */
 
     'migrations' => 'migrations',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Redis Databases
-    |--------------------------------------------------------------------------
-    |
-    | Redis is an open source, fast, and advanced key-value store that also
-    | provides a richer body of commands than a typical key-value system
-    | such as APC or Memcached. Laravel makes it easy to dig right in.
-    |
-    */
-
-    'redis' => [
-
-        'client' => 'predis',
-
-        'options' => [
-            'cluster' => 'redis',
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
-        ],
-
-        'default' => [
-            'url' => env('REDIS_URL'),
-            'host' => '127.0.0.1',
-            'password' => null,
-            'port' => '6379',
-            'database' => '0',
-        ],
-
-        'cache' => [
-            'url' => env('REDIS_URL'),
-            'host' => '127.0.0.1',
-            'password' => null,
-            'port' => '6379',
-            'database' => '1',
-        ],
-
-    ],
 
 ];

@@ -13,16 +13,6 @@ services:
     ports:
       - 3307:3306
     command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
-  
-  mongo:
-    image: mongo
-    container_name: ${COMPOSE_PROJECT_NAME}_mongo
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
 
   postgres:
     image: postgres
@@ -34,17 +24,6 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DB: pg_base
-
-  redis:
-    image: redis
-    container_name: ${COMPOSE_PROJECT_NAME}_redis
-    restart: always
-    environment:
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
-      - ALLOW_EMPTY_PASSWORD=yes
-      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
-    ports:
-      - '6379:6379'
       
   clickhouse:
     image: yandex/clickhouse-server
@@ -52,4 +31,14 @@ services:
     restart: always
     ports:
       - '8123:8123'
+
+  mongo:
+    image: mongo
+    container_name: ${COMPOSE_PROJECT_NAME}_mongo
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
       

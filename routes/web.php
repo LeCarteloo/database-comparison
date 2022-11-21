@@ -18,6 +18,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/redis', [RedisController::class, 'testRedis']);
-
 Route::get('/test', [App\Http\Controllers\TestDatabasesController::class, 'index']);

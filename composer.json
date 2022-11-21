@@ -7,6 +7,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "fruitcake/laravel-cors": "^2.0",
+        "glushkovds/phpclickhouse-laravel": "^1.15",
         "guzzlehttp/guzzle": "^7.0.1",
         "jenssegers/mongodb": "*",
         "laravel/framework": "^8.54",
