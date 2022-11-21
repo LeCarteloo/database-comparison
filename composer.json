@@ -12,7 +12,7 @@
         "jenssegers/mongodb": "*",
         "laravel/framework": "^8.54",
         "laravel/tinker": "^2.5",
-        "predis/predis": "^2.0"
+        "the-tinderbox/clickhouse-builder": "6.0 as 5.2.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
