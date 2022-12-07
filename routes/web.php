@@ -18,3 +18,4 @@ Route::get('/', function () {
 });
 
 Route::get('/test', [App\Http\Controllers\TestDatabasesController::class, 'index']);
+Route::get('/mysql', [App\Http\Controllers\MySqlController::class, 'index']);

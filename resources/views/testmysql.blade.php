@@ -21,8 +21,26 @@
         </style>
     </head>
     <body class="antialiased">
-        {{ $mysql }}
-        {{ $pgsql }}
-        {{ $clickhouse }}
+        @forelse ($results as $result)
+            {{ $result->first_name }} {{ $result->last_name }}<br>
+            {{ $result->birth_date }} {{ $result->gender }} <br>
+            {{ $result->salary }} <br>
+            {{ $result->from_date }} {{ $result->to_date }}
+            <br><br><br>
+        @empty
+            Nie ma
+        @endforelse
+
+        PGSQL 
+        @forelse ($resultsP as $result)
+        {{ $result->first_name }} {{ $result->last_name }}<br>
+        {{ $result->birth_date }} {{ $result->gender }} <br>
+        {{ $result->salary }} <br>
+        {{ $result->from_date }} {{ $result->to_date }}
+        <br><br><br>
+    @empty
+        Nie ma
+    @endforelse
+
     </body>
 </html>
