@@ -1,25 +1,16 @@
-import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Homepage from './pages/Homepage';
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
+import { Main } from './pages';
 
 function App() {
   return (
     <div className="app">
-      <ThemeProvider theme={darkTheme}>
-        <main>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Homepage />} />
-            </Routes>
-          </Router>
-        </main>
-      </ThemeProvider>
+      <main>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Main />} />
+          </Routes>
+        </Router>
+      </main>
     </div>
   );
 }
