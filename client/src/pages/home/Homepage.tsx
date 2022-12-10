@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Block, BlockGroup } from '../../components';
+import { BlockGroup } from '../../components';
 import { DeleteForever, Window, JoinInnerOutlined } from '@mui/icons-material';
 import * as S from './Homepage.styled';
 import { IBlock } from '../../interfaces/interfaces';
+import { motion } from 'framer-motion';
 
 interface Actions {
   select: number | undefined;
+  update: number | undefined;
   delete: number | undefined;
   joins: number | undefined;
 }
@@ -20,6 +22,7 @@ const Homepage = () => {
   const [actions, setActions] = useState<Actions>({
     select: undefined,
     delete: undefined,
+    update: undefined,
     joins: undefined,
   });
 
@@ -27,6 +30,28 @@ const Homepage = () => {
     {
       title: 'Select',
       action: 'select',
+      blocks: [
+        {
+          icon: <Window fontSize="large" />,
+          label: '1000 records',
+        },
+        {
+          icon: <Window fontSize="large" />,
+          label: '5000 records',
+        },
+        {
+          icon: <Window fontSize="large" />,
+          label: '10000 records',
+        },
+        {
+          icon: <Window fontSize="large" />,
+          label: '50000 records',
+        },
+      ],
+    },
+    {
+      title: 'Update',
+      action: 'update',
       blocks: [
         {
           icon: <Window fontSize="large" />,
@@ -81,7 +106,11 @@ const Homepage = () => {
   ];
 
   return (
-    <>
+    <motion.div
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
+      transition={{ duration: 1, ease: 'easeInOut' }}
+    >
       <S.Header>
         <h1>Homepage</h1>
       </S.Header>
@@ -106,9 +135,16 @@ const Homepage = () => {
             </S.BlockList>
           </section>
         ))}
+        <S.Button
+          disabled={
+            Object.values(actions).filter((action) => action !== undefined)
+              .length === 0
+          }
+        >
+          Start comparison
+        </S.Button>
       </S.SectionList>
-      <ActionProgress />
-    </>
+    </motion.div>
   );
 };
 

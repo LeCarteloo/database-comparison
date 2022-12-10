@@ -25,7 +25,7 @@ const Block = styled.button<BlockType>`
   position: relative;
   width: 100%;
   min-width: 100px;
-  max-width: 160px;
+  max-width: 130px;
   aspect-ratio: 1/1;
   color: white;
   background-color: transparent;
@@ -33,9 +33,9 @@ const Block = styled.button<BlockType>`
   border: 2px solid gray;
   cursor: pointer;
   overflow: hidden;
+  transition: 0.2s ease-in-out;
   &:hover {
-    border-color: #fff;
-    color: #fff;
+    transform: scale(1.05);
   }
   &:active {
     opacity: 0.6;

@@ -1,6 +1,4 @@
 import * as S from './Block.styled';
-import { RuleOutlined } from '@mui/icons-material';
-import Select from '../../assets/select.jpg';
 
 interface BlockProps {
   icon: JSX.Element;
@@ -18,7 +16,7 @@ const Block = ({ icon, label, img, active, onClick }: BlockProps) => {
         <span>{label}</span>
         <span></span>
       </S.InnerBlock>
-      {img ? <S.ImgBlock img={Select} /> : null}
+      {img ? <S.ImgBlock img={img} /> : null}
     </S.Block>
   );
 };
