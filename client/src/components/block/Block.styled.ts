@@ -22,16 +22,24 @@ const ImgBlock = styled.div<ImgType>`
 `;
 
 const Block = styled.button<BlockType>`
-  outline: none;
   position: relative;
-  height: 150px;
-  width: 150px;
+  width: 100%;
+  min-width: 100px;
+  max-width: 160px;
+  aspect-ratio: 1/1;
   color: white;
   background-color: transparent;
   border-radius: 5px;
-  border: 1px solid gray;
+  border: 2px solid gray;
   cursor: pointer;
   overflow: hidden;
+  &:hover {
+    border-color: #fff;
+    color: #fff;
+  }
+  &:active {
+    opacity: 0.6;
+  }
   &:hover,
   &:focus {
     ${ImgBlock} {
@@ -42,13 +50,14 @@ const Block = styled.button<BlockType>`
   ${({ active }) =>
     active &&
     css`
-      border: 1px solid #6fcf97;
+      border-color: #6fcf97;
       color: #6fcf97;
     `}
 `;
 
 const InnerBlock = styled.div`
   position: absolute;
+  top: 0;
   z-index: 1;
   display: flex;
   justify-content: center;
