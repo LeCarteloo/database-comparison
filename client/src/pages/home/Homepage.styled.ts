@@ -1,9 +1,5 @@
 import styled from 'styled-components';
 
-type ImgType = {
-  img: string;
-};
-
 const Header = styled.header`
   padding: 2em;
 `;
