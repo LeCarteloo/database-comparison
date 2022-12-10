@@ -4,13 +4,11 @@ import { Main } from './pages';
 function App() {
   return (
     <div className="app">
-      <main>
-        <Router>
-          <Routes>
-            <Route path="/*" element={<Main />} />
-          </Routes>
-        </Router>
-      </main>
+      <Router>
+        <Routes>
+          <Route path="/*" element={<Main />} />
+        </Routes>
+      </Router>
     </div>
   );
 }

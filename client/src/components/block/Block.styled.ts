@@ -34,14 +34,12 @@ const Block = styled.button<BlockType>`
   cursor: pointer;
   overflow: hidden;
   transition: 0.2s ease-in-out;
-  &:hover {
-    transform: scale(1.05);
-  }
   &:active {
     opacity: 0.6;
   }
   &:hover,
   &:focus {
+    transform: scale(1.05);
     ${ImgBlock} {
       transform: scale(1.2);
     }
