@@ -6,6 +6,17 @@ const HomeGrid = styled.div`
   grid-template-rows: 1fr;
   grid-template-areas: 'sidebar main';
   height: 100vh;
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-export { HomeGrid };
+const Main = styled.main`
+  overflow: auto;
+  padding: 0 2em 2em 2em;
+  @media (max-width: 800px) {
+    padding: 0 0.8em 0.8em 0.8em;
+  }
+`;
+
+export { HomeGrid, Main };
