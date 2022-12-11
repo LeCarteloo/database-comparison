@@ -12,7 +12,8 @@ const HomeGrid = styled.div`
 `;
 
 const Main = styled.main`
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 0 2em 2em 2em;
   @media (max-width: 800px) {
     padding: 0 0.8em 0.8em 0.8em;

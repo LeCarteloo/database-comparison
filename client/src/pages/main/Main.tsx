@@ -5,17 +5,14 @@ import { Homepage, Overviewpage } from '../../pages';
 import { AnimatePresence } from 'framer-motion';
 
 const Main = () => {
-  const location = useLocation();
   return (
     <S.HomeGrid>
       <Sidebar />
       <S.Main>
-        <AnimatePresence>
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/overview" element={<Overviewpage />} />
-          </Routes>
-        </AnimatePresence>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/overview" element={<Overviewpage />} />
+        </Routes>
       </S.Main>
     </S.HomeGrid>
   );

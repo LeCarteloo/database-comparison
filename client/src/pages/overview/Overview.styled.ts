@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const Header = styled.header`
   padding: 2em 0;
@@ -8,7 +9,8 @@ const Results = styled.div`
   background-color: #141432;
   border-radius: 10px;
   padding: 2em;
-  flex: 1;
+  width: 100%;
+  height: 100%;
 `;
 
 const MainContainer = styled.div`
@@ -29,7 +31,7 @@ const LoadingList = styled.ul`
   }
 `;
 
-const LoadingItem = styled.li`
+const LoadingItem = styled(motion.li)`
   display: flex;
   align-items: center;
   margin-bottom: 0.4em;
