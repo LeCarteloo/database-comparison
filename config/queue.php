@@ -42,6 +42,15 @@ return [
             'after_commit' => false,
         ],
 
+        // 'database' => [
+        //     'driver' => 'mongodb',
+        //     // You can also specify your jobs specific database created on config/database.php
+        //     'connection' => 'mongodb-job',
+        //     'table' => 'jobs',
+        //     'queue' => 'default',
+        //     'expire' => 60,
+        // ],
+
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',
@@ -61,7 +70,7 @@ return [
             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'after_commit' => false,
         ],
-
+        
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
