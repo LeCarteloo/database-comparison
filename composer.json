@@ -2,17 +2,19 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "cybercog/laravel-clickhouse": "dev-master",
         "fruitcake/laravel-cors": "^2.0",
-        "glushkovds/phpclickhouse-laravel": "^1.15",
         "guzzlehttp/guzzle": "^7.0.1",
         "jenssegers/mongodb": "*",
         "laravel/framework": "^8.54",
-        "laravel/tinker": "^2.5",
-        "the-tinderbox/clickhouse-builder": "6.0 as 5.2.1"
+        "laravel/tinker": "^2.5"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
