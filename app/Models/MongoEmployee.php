@@ -8,7 +8,7 @@ use Jenssegers\Mongodb\Eloquent\Model;
 class MongoEmployee extends Model
 {
     use HasFactory;
-    // protected $connection = 'mongodb';
+
     public $timestamps = false;
     public $table = 'employees';
 }
