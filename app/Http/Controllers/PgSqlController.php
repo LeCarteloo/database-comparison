@@ -25,6 +25,11 @@ class PgSqlController extends Controller
             FROM employees
         ');
 
+       
+
+        $select1Time = microtime(true) - $msc;
+        $msc = microtime(true);
+
         //Informacje o pracowniku i jego wynagrodzeniach
         $select2 = DB::connection('pgsql')->select(
             'SELECT * 
@@ -33,6 +38,9 @@ class PgSqlController extends Controller
             AND e.id = s.employee_id
         ');
    
+        $select2Time = microtime(true) - $msc;
+        $msc = microtime(true);
+
 
         //Ile wypłat dostał pracownik i jaką największą
         $select3 = DB::connection('pgsql')->select(' 
@@ -43,6 +51,10 @@ class PgSqlController extends Controller
             GROUP BY employee_id) X
             WHERE E.id = X.employee_id
         ');
+
+        $select3Time = microtime(true) - $msc;
+        $msc = microtime(true);
+
 
         //Pierwszy tytuł
         $select4 = DB::connection('pgsql')->select(' 
@@ -58,6 +70,10 @@ class PgSqlController extends Controller
             AND E.id = Y.employee_id
         ');
 
+        $select4Time = microtime(true) - $msc;
+        $msc = microtime(true);
+
+
         //Usuwanie
         $delete = DB::connection('pgsql')->select(
             'DELETE 
@@ -65,6 +81,10 @@ class PgSqlController extends Controller
             WHERE id > 1
             AND id < 11;
         ');
+
+        $deleteTime = microtime(true) - $msc;
+        $msc = microtime(true);
+
 
         //Update
         $update = DB::connection('pgsql')->select(
@@ -74,6 +94,10 @@ class PgSqlController extends Controller
             AND employee_id < 110 ;
         ");
 
+        $updateTime = microtime(true) - $msc;
+        $msc = microtime(true);
+
+
         //Insert
         $insert = DB::connection('pgsql')->select(
             "INSERT INTO employees
@@ -82,8 +106,12 @@ class PgSqlController extends Controller
             ('1998-05-04', 'Jacek', 'Mial', 'M', '2009-04-05');
         ");
 
+        $insertTime = microtime(true) - $msc;
+        
 
-       $total_diff = microtime(true) - $msc;
+
+
+       
 
       
 
@@ -97,7 +125,13 @@ class PgSqlController extends Controller
             'delete' => $delete,
             'update' => $update,
             'insert' => $insert,
-            'time' => round($total_diff, 1000 -1.1, 2),
+            'select1Time' => round($select1Time, 1000 -1.1, 2),
+            'select2Time' => round($select2Time, 1000 -1.1, 2),
+            'select3Time' => round($select3Time, 1000 -1.1, 2),
+            'select4Time' => round($select4Time, 1000 -1.1, 2),
+            'deleteTime' => round($deleteTime, 1000 -1.1, 2),
+            'updateTime' => round($updateTime, 1000 -1.1, 2),
+            'insertTime' => round($insertTime, 1000 -1.1, 2),
         ]);
     }
 }

@@ -21,26 +21,21 @@
         </style>
     </head>
     <body class="antialiased">
-        @forelse ($results as $result)
+        Select 1 : {{ $select1Time }} <br>
+        Select 2 : {{ $select2Time }} <br>
+        Select 3 : {{ $select3Time }} <br>
+        Select 4 : {{ $select4Time }} <br>
+        Delete : {{ $deleteTime }} <br>
+        Update : {{ $updateTime }} <br>
+        Insert : {{ $insertTime }} <br>
+        {{-- @forelse ($time as $result)
             {{ $result->first_name }} {{ $result->last_name }}<br>
-            {{ $result->birth_date }} {{ $result->gender }} <br>
-            {{ $result->salary }} <br>
-            {{ $result->from_date }} {{ $result->to_date }}
             <br><br><br>
         @empty
             Nie ma
-        @endforelse
+        @endforelse --}}
 
-        PGSQL 
-        @forelse ($resultsP as $result)
-        {{ $result->first_name }} {{ $result->last_name }}<br>
-        {{ $result->birth_date }} {{ $result->gender }} <br>
-        {{ $result->salary }} <br>
-        {{ $result->from_date }} {{ $result->to_date }}
-        <br><br><br>
-    @empty
-        Nie ma
-    @endforelse
+       
 
     </body>
 </html>
