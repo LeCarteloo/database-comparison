@@ -15,7 +15,7 @@ class CreateSalariesTable extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->references('id')->on('employees');
+            $table->foreignId('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->integer('salary');
             $table->date('from_date');
             $table->date('to_date');

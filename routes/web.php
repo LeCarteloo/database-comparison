@@ -19,3 +19,4 @@ Route::get('/', function () {
 
 Route::get('/test', [App\Http\Controllers\TestDatabasesController::class, 'index']);
 Route::get('/mysql', [App\Http\Controllers\MySqlController::class, 'index']);
+Route::get('/pgsql', [App\Http\Controllers\PgSqlController::class, 'index']);
