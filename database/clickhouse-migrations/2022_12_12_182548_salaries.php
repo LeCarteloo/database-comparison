@@ -11,12 +11,11 @@ return new class extends AbstractClickhouseMigration
         $this->clickhouseClient->write(
             <<<SQL
                 CREATE TABLE IF NOT EXISTS salaries (
-                    id UInt64,
                     employee_id UInt64,
                     salary UInt64,
                     from_date Date,
                     to_date Date
-                ) ENGINE = MergeTree ORDER BY id;
+                ) ENGINE = MergeTree ORDER BY employee_id;
             SQL
         );
     }
