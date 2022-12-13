@@ -1,7 +1,19 @@
 import { CircleLoader } from '../../components';
 import * as S from './Overview.styled';
 import { motion } from 'framer-motion';
-import { XAxis, YAxis, Bar, BarChart, ResponsiveContainer } from 'recharts';
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  LabelList,
+  Label,
+} from 'recharts';
 
 const Overviewpage = () => {
   const databases = [
@@ -9,19 +21,10 @@ const Overviewpage = () => {
     { key: 'postgresql', name: 'PostgreSQL', color: 'rgb(0, 100, 151)' },
     { key: 'clickhouse', name: 'Clickhouse', color: 'rgb(230, 255, 151)' },
     { key: 'mongodb', name: 'MongoDB', color: 'rgb(111, 207, 151)' },
-    { key: 'cosdb', name: 'CosDB', color: 'rgb(197, 36, 151)' },
+    { key: 'placeholder', name: 'Placeholder', color: 'rgb(197, 36, 151)' },
   ];
 
-  // {
-  //   name: 'Performance',
-  //   mongo: 100,
-  //   clickhouse: 110,
-  //   postgresql: 33,
-  //   mysql: 33,
-  //   cosdb: 20,
-  // },
-
-  // Sample data
+  // Sample data and charts
   const data = [
     {
       name: 'Memory usage',
@@ -30,6 +33,62 @@ const Overviewpage = () => {
       postgresql: 5,
       mysql: 5,
       cosdb: 20,
+    },
+  ];
+
+  const data1 = [
+    {
+      name: 'mySQL',
+      mongodb: 100,
+      mongodbLabel: 24023000.0,
+      clickhouse: 110,
+      postgresql: 33,
+      mysql: 33,
+      placeholder: 20,
+    },
+    {
+      name: 'mongoDB',
+      mongodb: 100,
+      clickhouse: 110,
+      postgresql: 33,
+      mysql: 33,
+      placeholder: 20,
+    },
+  ];
+
+  const data2 = [
+    {
+      name: 'placeholder',
+      mongodb: 100,
+      clickhouse: 110,
+      postgresql: 13,
+      mysql: 33,
+      placeholder: 20,
+    },
+    {
+      name: 'placeholder',
+      mongodb: 100,
+      clickhouse: 150,
+      postgresql: 63,
+      mysql: 43,
+      placeholder: 30,
+    },
+    {
+      name: 'placeholder',
+      mongodb: 140,
+      clickhouse: 150,
+      postgresql: 53,
+      mysql: 150,
+      placeholder: 35,
+    },
+  ];
+
+  const topCharts = [
+    {
+      data: data1,
+    },
+    {
+      data: data,
     },
   ];
 
@@ -53,28 +112,37 @@ const Overviewpage = () => {
             ))}
           </S.Legend>
           <S.Charts>
-            <div>
-              <ResponsiveContainer width="99%" minHeight={250}>
-                <BarChart data={data} margin={{ left: -22 }}>
+            {topCharts.map((chart, i) => (
+              <div key={`chart-${i}`}>
+                <ResponsiveContainer width="99%" minHeight={250}>
+                  <BarChart data={chart.data} margin={{ left: -22 }}>
+                    <XAxis dataKey="name" stroke="#fff" />
+                    <YAxis stroke="#fff" />
+                    {databases.map((db) => (
+                      <Bar dataKey={db.key} barSize={25} fill={db.color} />
+                    ))}
+                    <Tooltip />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ))}
+            <S.FullGridItem>
+              <ResponsiveContainer width="99%" minHeight={300}>
+                <LineChart margin={{ left: -22 }} data={data2}>
+                  {databases.map((db) => (
+                    <Line
+                      type="monotone"
+                      dataKey={db.key}
+                      stroke={db.color}
+                      strokeWidth={2}
+                    />
+                  ))}
+                  <CartesianGrid stroke="#ffffffab" />
                   <XAxis dataKey="name" stroke="#fff" />
                   <YAxis stroke="#fff" />
-                  {databases.map((db) => (
-                    <Bar dataKey={db.key} barSize={25} fill={db.color} />
-                  ))}
-                </BarChart>
+                </LineChart>
               </ResponsiveContainer>
-            </div>
-            <div>
-              <ResponsiveContainer width="99%" minHeight={250}>
-                <BarChart data={data} margin={{ left: -22 }}>
-                  <XAxis dataKey="name" stroke="#fff" />
-                  <YAxis stroke="#fff" />
-                  {databases.map((db) => (
-                    <Bar dataKey={db.key} barSize={25} fill={db.color} />
-                  ))}
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            </S.FullGridItem>
           </S.Charts>
         </S.Results>
         <S.LoadingList>

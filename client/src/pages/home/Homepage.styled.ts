@@ -4,18 +4,30 @@ const Header = styled.header`
   padding: 2em 0;
 `;
 
-const SectionList = styled.div`
+const Content = styled.div`
   margin-top: 1em;
   background-color: #141432;
   border-radius: 10px;
   padding: 2em;
 `;
 
+const SectionList = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
 const BlockList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 12%));
+  grid-template-columns: repeat(auto-fit, minmax(107px, 8%));
   justify-content: start;
   gap: 1em;
+  @media (max-width: 480px) {
+    justify-content: center;
+  }
   @media (max-width: 375px) {
     grid-template-columns: 107px 107px;
   }
@@ -45,4 +57,4 @@ const Button = styled.button`
   }
 `;
 
-export { SectionList, BlockList, Header, Button };
+export { Content, BlockList, Header, Button, SectionList };

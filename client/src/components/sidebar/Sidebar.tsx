@@ -1,4 +1,9 @@
-import { Dashboard, StackedLineChart, Insights } from '@mui/icons-material';
+import {
+  Dashboard,
+  StackedLineChart,
+  Insights,
+  Leaderboard,
+} from '@mui/icons-material';
 import * as S from './Sidebar.styled';
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -14,7 +19,7 @@ const Sidebar = () => {
       label: 'Get Started',
     },
     {
-      icon: <StackedLineChart />,
+      icon: <Leaderboard />,
       path: '/overview',
       label: 'Overview',
     },
@@ -47,7 +52,12 @@ const Sidebar = () => {
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </S.Hamburger>
-      <S.Aside open={open}>
+      <S.Aside
+        open={open}
+        animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
+      >
         <S.Nav>
           <h2>Database comparison</h2>
           <S.List>

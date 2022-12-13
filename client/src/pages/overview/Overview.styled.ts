@@ -23,8 +23,18 @@ const Charts = styled.section`
   grid-template-columns: auto auto;
   gap: 1em;
   @media (max-width: 1120px) {
-    grid-template-rows: auto;
+    /* grid-template-rows: 1fr 1fr 1fr; */
+    grid-template-rows: auto auto auto;
     grid-template-columns: auto;
+
+    /* grid-template-columns: auto; */
+  }
+`;
+
+const FullGridItem = styled.div`
+  grid-column: span 2;
+  @media (max-width: 800px) {
+    grid-column: auto;
   }
 `;
 
@@ -103,4 +113,5 @@ export {
   Results,
   MainContainer,
   Charts,
+  FullGridItem,
 };

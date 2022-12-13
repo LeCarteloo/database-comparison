@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { motion } from 'framer-motion';
 
 interface OpenProp {
   open: boolean;
@@ -48,7 +49,7 @@ const Hamburger = styled.button<OpenProp>`
   }
 `;
 
-const Aside = styled.aside<OpenProp>`
+const Aside = styled(motion.aside)<OpenProp>`
   grid-area: sidebar;
   width: 250px;
   transition: 0.2s ease-in-out;
