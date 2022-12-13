@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { motion } from 'framer-motion';
 
 interface LegendItemProp {
   color: string;
@@ -70,48 +69,4 @@ const LegendItem = styled.div<LegendItemProp>`
   }
 `;
 
-const MainContainer = styled.div`
-  display: flex;
-  gap: 5%;
-  @media (max-width: 800px) {
-    flex-direction: column-reverse;
-  }
-`;
-
-const LoadingList = styled.ul`
-  list-style: none;
-  @media (max-width: 800px) {
-    display: flex;
-    gap: 1em;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-`;
-
-const LoadingItem = styled(motion.li)`
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.4em;
-  gap: 1em;
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #141432;
-    border-radius: 10px;
-    width: 40px;
-    height: 40px;
-  }
-`;
-
-export {
-  Legend,
-  LegendItem,
-  Header,
-  LoadingItem,
-  LoadingList,
-  Results,
-  MainContainer,
-  Charts,
-  FullGridItem,
-};
+export { Legend, LegendItem, Header, Results, Charts, FullGridItem };

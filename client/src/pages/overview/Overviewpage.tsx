@@ -1,4 +1,3 @@
-import { CircleLoader } from '../../components';
 import * as S from './Overview.styled';
 import { motion } from 'framer-motion';
 import {
@@ -11,11 +10,12 @@ import {
   BarChart,
   ResponsiveContainer,
   Tooltip,
-  LabelList,
-  Label,
 } from 'recharts';
+import { useComparisonContext } from '../../context/ComparisonContext';
 
 const Overviewpage = () => {
+  const { comparisonData } = useComparisonContext();
+
   const databases = [
     { key: 'mysql', name: 'Mysql', color: 'rgb(0, 117, 151)' },
     { key: 'postgresql', name: 'PostgreSQL', color: 'rgb(0, 100, 151)' },
@@ -101,66 +101,50 @@ const Overviewpage = () => {
       <S.Header>
         <h1>Overview</h1>
       </S.Header>
-      <S.MainContainer>
-        <S.Results>
-          <S.Legend>
-            {databases.map((db) => (
-              <S.LegendItem color={db.color}>
-                <span></span>
-                <h5>{db.name}</h5>
-              </S.LegendItem>
-            ))}
-          </S.Legend>
-          <S.Charts>
-            {topCharts.map((chart, i) => (
-              <div key={`chart-${i}`}>
-                <ResponsiveContainer width="99%" minHeight={250}>
-                  <BarChart data={chart.data} margin={{ left: -22 }}>
-                    <XAxis dataKey="name" stroke="#fff" />
-                    <YAxis stroke="#fff" />
-                    {databases.map((db) => (
-                      <Bar dataKey={db.key} barSize={25} fill={db.color} />
-                    ))}
-                    <Tooltip />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            ))}
-            <S.FullGridItem>
-              <ResponsiveContainer width="99%" minHeight={300}>
-                <LineChart margin={{ left: -22 }} data={data2}>
-                  {databases.map((db) => (
-                    <Line
-                      type="monotone"
-                      dataKey={db.key}
-                      stroke={db.color}
-                      strokeWidth={2}
-                    />
-                  ))}
-                  <CartesianGrid stroke="#ffffffab" />
+      <S.Results>
+        {comparisonData.toString()}
+        <S.Legend>
+          {databases.map((db) => (
+            <S.LegendItem color={db.color}>
+              <span></span>
+              <h5>{db.name}</h5>
+            </S.LegendItem>
+          ))}
+        </S.Legend>
+        <S.Charts>
+          {topCharts.map((chart, i) => (
+            <div key={`chart-${i}`}>
+              <ResponsiveContainer width="99%" minHeight={250}>
+                <BarChart data={chart.data} margin={{ left: -22 }}>
                   <XAxis dataKey="name" stroke="#fff" />
                   <YAxis stroke="#fff" />
-                </LineChart>
+                  {databases.map((db) => (
+                    <Bar dataKey={db.key} barSize={25} fill={db.color} />
+                  ))}
+                  <Tooltip />
+                </BarChart>
               </ResponsiveContainer>
-            </S.FullGridItem>
-          </S.Charts>
-        </S.Results>
-        <S.LoadingList>
-          {databases.map((db, i) => (
-            <S.LoadingItem
-              key={i}
-              animate={{ x: 0 }}
-              initial={{ x: 200 }}
-              transition={{ duration: 0.4 + i * 0.1, ease: 'easeInOut' }}
-            >
-              <div>
-                <CircleLoader isLoading={true} />
-              </div>
-              <span>{db.name}</span>
-            </S.LoadingItem>
+            </div>
           ))}
-        </S.LoadingList>
-      </S.MainContainer>
+          <S.FullGridItem>
+            <ResponsiveContainer width="99%" minHeight={300}>
+              <LineChart margin={{ left: -22 }} data={data2}>
+                {databases.map((db) => (
+                  <Line
+                    type="monotone"
+                    dataKey={db.key}
+                    stroke={db.color}
+                    strokeWidth={2}
+                  />
+                ))}
+                <CartesianGrid stroke="#ffffffab" />
+                <XAxis dataKey="name" stroke="#fff" />
+                <YAxis stroke="#fff" />
+              </LineChart>
+            </ResponsiveContainer>
+          </S.FullGridItem>
+        </S.Charts>
+      </S.Results>
     </motion.div>
   );
 };

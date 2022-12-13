@@ -4,8 +4,7 @@ const Header = styled.header`
   padding: 2em 0;
 `;
 
-const Content = styled.div`
-  margin-top: 1em;
+const ContentBlock = styled.div`
   background-color: #141432;
   border-radius: 10px;
   padding: 2em;
@@ -57,4 +56,12 @@ const Button = styled.button`
   }
 `;
 
-export { Content, BlockList, Header, Button, SectionList };
+const MainContainer = styled.div`
+  display: flex;
+  gap: 3%;
+  @media (max-width: 800px) {
+    flex-direction: column-reverse;
+  }
+`;
+
+export { ContentBlock, BlockList, Header, Button, SectionList, MainContainer };

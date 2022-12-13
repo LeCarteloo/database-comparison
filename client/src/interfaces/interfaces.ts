@@ -4,4 +4,14 @@ interface IBlock {
   img?: string;
 }
 
-export type { IBlock };
+type Databases = 'mysql' | 'clickhouse' | 'pgsql' | 'mongodb';
+
+interface ComparisonData {
+  key: string;
+  type: Databases;
+  time: number;
+  memory: number;
+  query?: string;
+}
+
+export type { Databases, ComparisonData, IBlock };
