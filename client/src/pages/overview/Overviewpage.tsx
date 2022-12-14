@@ -12,68 +12,18 @@ import {
   Tooltip,
 } from 'recharts';
 import { useComparisonContext } from '../../context/ComparisonContext';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Overviewpage = () => {
   const { comparisonData } = useComparisonContext();
+  const navigate = useNavigate();
 
-  const testResponse = [
-    {
-      key: 'insert-1000',
-      data: [
-        {
-          mysql: {
-            time: 83,
-            memory: 1000,
-            query: 'SELECT * FROM test',
-          },
-          pgsql: {
-            time: 103,
-            memory: 300,
-            query: 'SELECT * FROM test',
-          },
-          mongodb: {
-            time: 23,
-            memory: 300,
-            query: 'SELECT * FROM test',
-          },
-          clickhouse: {
-            time: 53,
-            memory: 300,
-            query: 'SELECT * FROM test',
-          },
-        },
-      ],
-    },
-    {
-      key: 'insert-5000',
-      data: [
-        {
-          mysql: {
-            time: 83,
-            memory: 1000,
-            query: 'SELECT * FROM test',
-          },
-          pgsql: {
-            time: 103,
-            memory: 300,
-            query: 'SELECT * FROM test',
-          },
-          mongodb: {
-            time: 23,
-            memory: 300,
-            query: 'SELECT * FROM test',
-          },
-          clickhouse: {
-            time: 53,
-            memory: 300,
-            query: 'SELECT * FROM test',
-          },
-        },
-      ],
-    },
-  ];
-
-  console.log(testResponse);
+  useEffect(() => {
+    if (comparisonData.length === 0) {
+      navigate('/');
+    }
+  }, []);
 
   const databases = [
     { key: 'mysql', name: 'Mysql', color: 'rgb(0, 117, 151)' },
@@ -82,46 +32,18 @@ const Overviewpage = () => {
     { key: 'mongodb', name: 'MongoDB', color: 'rgb(111, 207, 151)' },
   ];
 
-  // Sample data and charts
-  const data = [
-    {
-      name: 'Memory usage',
-      mongodb: 34,
-      clickhouse: 200,
-      postgresql: 5,
-      mysql: 5,
-      cosdb: 20,
-    },
-  ];
+  // Testing
+  const inserts = comparisonData.filter((obj) => obj.key.includes('insert'));
+  const deletes = comparisonData.filter((obj) => obj.key.includes('delete'));
+  const updates = comparisonData.filter((obj) => obj.key.includes('update'));
+  const selects = comparisonData.filter((obj) => obj.key.includes('select'));
 
-  const data1 = [
-    {
-      name: 'mySQL',
-      mongodb: 100,
-      mongodbLabel: 24023000.0,
-      clickhouse: 110,
-      postgresql: 33,
-      mysql: 33,
-      placeholder: 20,
-    },
-    {
-      name: 'mongoDB',
-      mongodb: 100,
-      clickhouse: 110,
-      postgresql: 33,
-      mysql: 33,
-      placeholder: 20,
-    },
-  ];
-
-  const topCharts = [
-    {
-      data: data1,
-    },
-    {
-      data: data,
-    },
-  ];
+  const test = {
+    inserts: inserts,
+    deletes: deletes,
+    updates: updates,
+    selects: selects,
+  };
 
   return (
     <motion.div
@@ -142,19 +64,23 @@ const Overviewpage = () => {
           ))}
         </S.Legend>
         <S.Charts>
-          <ResponsiveContainer width="99%" minHeight={250}>
-            <BarChart data={testResponse} margin={{ left: -22 }}>
-              <XAxis dataKey="key" stroke="#fff" />
-              <YAxis stroke="#fff" />
-              {databases.map((db) => (
-                <Bar
-                  dataKey={`data[0].${db.key}.time`}
-                  barSize={25}
-                  fill={db.color}
-                />
-              ))}
-            </BarChart>
-          </ResponsiveContainer>
+          {Object.values(test).map((t, i) =>
+            t.length !== 0 ? (
+              <ResponsiveContainer key={i} width="99%" minHeight={250}>
+                <BarChart data={t} margin={{ left: -22 }}>
+                  <XAxis dataKey="key" stroke="#fff" />
+                  <YAxis stroke="#fff" />
+                  {databases.map((db) => (
+                    <Bar
+                      dataKey={`data[0].${db.key}.time`}
+                      barSize={25}
+                      fill={db.color}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            ) : null
+          )}
         </S.Charts>
       </S.Results>
     </motion.div>

@@ -144,40 +144,90 @@ const Homepage = () => {
       const testResponse: ComparisonData[] = [
         {
           key: 'insert-1000',
-          type: 'mysql',
-          time: 83,
-          memory: 1000,
-          query: 'SELECT * FROM test',
+          data: [
+            {
+              mysql: {
+                time: 83,
+                memory: 1000,
+                query: 'SELECT * FROM test',
+              },
+              pgsql: {
+                time: 103,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+              mongodb: {
+                time: 23,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+              clickhouse: {
+                time: 53,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+            },
+          ],
         },
         {
-          key: 'insert-1000',
-          type: 'mongodb',
-          time: 100,
-          memory: 200,
-          query: 'SELECT * FROM test',
+          key: 'insert-5000',
+          data: [
+            {
+              mysql: {
+                time: 83,
+                memory: 1000,
+                query: 'SELECT * FROM test',
+              },
+              pgsql: {
+                time: 103,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+              mongodb: {
+                time: 23,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+              clickhouse: {
+                time: 53,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+            },
+          ],
         },
         {
-          key: 'insert-1000',
-          type: 'clickhouse',
-          time: 10,
-          memory: 300,
-          query: 'SELECT * FROM test',
-        },
-        {
-          key: 'insert-1000',
-          type: 'pgsql',
-          time: 80,
-          memory: 1000,
-          query: 'SELECT * FROM test',
+          key: 'delete-5000',
+          data: [
+            {
+              mysql: {
+                time: 83,
+                memory: 1000,
+                query: 'SELECT * FROM test',
+              },
+              pgsql: {
+                time: 103,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+              mongodb: {
+                time: 23,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+              clickhouse: {
+                time: 53,
+                memory: 300,
+                query: 'SELECT * FROM test',
+              },
+            },
+          ],
         },
       ];
 
       const data = [...comparisonData, ...testResponse].filter(
         (element, index, self) =>
-          index ===
-          self.findIndex(
-            (elem) => elem.key === element.key && elem.type === element.type
-          )
+          index === self.findIndex((elem) => elem.key === element.key)
       );
 
       setData((prev) => ({ ...prev, isFetching: false }));
