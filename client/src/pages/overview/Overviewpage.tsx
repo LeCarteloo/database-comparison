@@ -16,12 +16,70 @@ import { useComparisonContext } from '../../context/ComparisonContext';
 const Overviewpage = () => {
   const { comparisonData } = useComparisonContext();
 
+  const testResponse = [
+    {
+      key: 'insert-1000',
+      data: [
+        {
+          mysql: {
+            time: 83,
+            memory: 1000,
+            query: 'SELECT * FROM test',
+          },
+          pgsql: {
+            time: 103,
+            memory: 300,
+            query: 'SELECT * FROM test',
+          },
+          mongodb: {
+            time: 23,
+            memory: 300,
+            query: 'SELECT * FROM test',
+          },
+          clickhouse: {
+            time: 53,
+            memory: 300,
+            query: 'SELECT * FROM test',
+          },
+        },
+      ],
+    },
+    {
+      key: 'insert-5000',
+      data: [
+        {
+          mysql: {
+            time: 83,
+            memory: 1000,
+            query: 'SELECT * FROM test',
+          },
+          pgsql: {
+            time: 103,
+            memory: 300,
+            query: 'SELECT * FROM test',
+          },
+          mongodb: {
+            time: 23,
+            memory: 300,
+            query: 'SELECT * FROM test',
+          },
+          clickhouse: {
+            time: 53,
+            memory: 300,
+            query: 'SELECT * FROM test',
+          },
+        },
+      ],
+    },
+  ];
+
+  console.log(testResponse);
+
   const databases = [
     { key: 'mysql', name: 'Mysql', color: 'rgb(0, 117, 151)' },
-    { key: 'postgresql', name: 'PostgreSQL', color: 'rgb(0, 100, 151)' },
+    { key: 'pgsql', name: 'PostgreSQL', color: 'rgb(0, 100, 151)' },
     { key: 'clickhouse', name: 'Clickhouse', color: 'rgb(230, 255, 151)' },
     { key: 'mongodb', name: 'MongoDB', color: 'rgb(111, 207, 151)' },
-    { key: 'placeholder', name: 'Placeholder', color: 'rgb(197, 36, 151)' },
   ];
 
   // Sample data and charts
@@ -56,33 +114,6 @@ const Overviewpage = () => {
     },
   ];
 
-  const data2 = [
-    {
-      name: 'placeholder',
-      mongodb: 100,
-      clickhouse: 110,
-      postgresql: 13,
-      mysql: 33,
-      placeholder: 20,
-    },
-    {
-      name: 'placeholder',
-      mongodb: 100,
-      clickhouse: 150,
-      postgresql: 63,
-      mysql: 43,
-      placeholder: 30,
-    },
-    {
-      name: 'placeholder',
-      mongodb: 140,
-      clickhouse: 150,
-      postgresql: 53,
-      mysql: 150,
-      placeholder: 35,
-    },
-  ];
-
   const topCharts = [
     {
       data: data1,
@@ -102,47 +133,28 @@ const Overviewpage = () => {
         <h1>Overview</h1>
       </S.Header>
       <S.Results>
-        {comparisonData.toString()}
         <S.Legend>
-          {databases.map((db) => (
-            <S.LegendItem color={db.color}>
+          {databases.map((db, i) => (
+            <S.LegendItem key={i} color={db.color}>
               <span></span>
               <h5>{db.name}</h5>
             </S.LegendItem>
           ))}
         </S.Legend>
         <S.Charts>
-          {topCharts.map((chart, i) => (
-            <div key={`chart-${i}`}>
-              <ResponsiveContainer width="99%" minHeight={250}>
-                <BarChart data={chart.data} margin={{ left: -22 }}>
-                  <XAxis dataKey="name" stroke="#fff" />
-                  <YAxis stroke="#fff" />
-                  {databases.map((db) => (
-                    <Bar dataKey={db.key} barSize={25} fill={db.color} />
-                  ))}
-                  <Tooltip />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          ))}
-          <S.FullGridItem>
-            <ResponsiveContainer width="99%" minHeight={300}>
-              <LineChart margin={{ left: -22 }} data={data2}>
-                {databases.map((db) => (
-                  <Line
-                    type="monotone"
-                    dataKey={db.key}
-                    stroke={db.color}
-                    strokeWidth={2}
-                  />
-                ))}
-                <CartesianGrid stroke="#ffffffab" />
-                <XAxis dataKey="name" stroke="#fff" />
-                <YAxis stroke="#fff" />
-              </LineChart>
-            </ResponsiveContainer>
-          </S.FullGridItem>
+          <ResponsiveContainer width="99%" minHeight={250}>
+            <BarChart data={testResponse} margin={{ left: -22 }}>
+              <XAxis dataKey="key" stroke="#fff" />
+              <YAxis stroke="#fff" />
+              {databases.map((db) => (
+                <Bar
+                  dataKey={`data[0].${db.key}.time`}
+                  barSize={25}
+                  fill={db.color}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
         </S.Charts>
       </S.Results>
     </motion.div>

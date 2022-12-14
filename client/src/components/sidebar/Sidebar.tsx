@@ -1,32 +1,31 @@
-import {
-  Dashboard,
-  StackedLineChart,
-  Insights,
-  Leaderboard,
-} from '@mui/icons-material';
+import { Dashboard, Insights, Leaderboard } from '@mui/icons-material';
 import * as S from './Sidebar.styled';
-import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useComparisonContext } from '../../context/ComparisonContext';
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
+  const { comparisonData } = useComparisonContext();
 
   const items = [
     {
       icon: <Dashboard />,
       path: '/',
       label: 'Get Started',
+      disabled: false,
     },
     {
       icon: <Leaderboard />,
       path: '/overview',
       label: 'Overview',
+      disabled: comparisonData.length === 0,
     },
     {
       icon: <Insights />,
       path: '/insights',
       label: 'Insights',
+      disabled: comparisonData.length === 0,
     },
   ];
 
@@ -63,14 +62,15 @@ const Sidebar = () => {
           <S.List>
             {items.map((item) => (
               <S.Item key={item.label}>
-                <NavLink
+                <S.Link
                   to={item.path}
                   onClick={() => setOpen(false)}
-                  tabIndex={isMobile && open ? 0 : -1}
+                  tabIndex={isMobile && open ? -1 : 0}
+                  disabled={item.disabled}
                 >
                   {item.icon}
                   {item.label}
-                </NavLink>
+                </S.Link>
               </S.Item>
             ))}
           </S.List>

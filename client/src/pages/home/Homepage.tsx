@@ -8,7 +8,7 @@ import {
   FiberNew,
 } from '@mui/icons-material';
 import * as S from './Homepage.styled';
-import { IBlock } from '../../interfaces/interfaces';
+import { ComparisonData, IBlock } from '../../interfaces/interfaces';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useComparisonContext } from '../../context/ComparisonContext';
@@ -45,7 +45,6 @@ const Homepage = () => {
   });
   const navigate = useNavigate();
   const { comparisonData, setComparisonData } = useComparisonContext();
-
   const sections: Sections[] = [
     {
       title: 'Insert',
@@ -142,15 +141,47 @@ const Homepage = () => {
 
     // Timeouts simulating API wait time
     setTimeout(() => {
-      const testResponse = {
-        key: 'insert-1000',
-        type: 'mysql',
-        time: '100',
-        memory: '1000',
-        query: 'SELECT * FROM test',
-      };
+      const testResponse: ComparisonData[] = [
+        {
+          key: 'insert-1000',
+          type: 'mysql',
+          time: 83,
+          memory: 1000,
+          query: 'SELECT * FROM test',
+        },
+        {
+          key: 'insert-1000',
+          type: 'mongodb',
+          time: 100,
+          memory: 200,
+          query: 'SELECT * FROM test',
+        },
+        {
+          key: 'insert-1000',
+          type: 'clickhouse',
+          time: 10,
+          memory: 300,
+          query: 'SELECT * FROM test',
+        },
+        {
+          key: 'insert-1000',
+          type: 'pgsql',
+          time: 80,
+          memory: 1000,
+          query: 'SELECT * FROM test',
+        },
+      ];
+
+      const data = [...comparisonData, ...testResponse].filter(
+        (element, index, self) =>
+          index ===
+          self.findIndex(
+            (elem) => elem.key === element.key && elem.type === element.type
+          )
+      );
+
       setData((prev) => ({ ...prev, isFetching: false }));
-      setComparisonData(testResponse);
+      setComparisonData(data);
       navigate('/overview');
     }, 3000);
   };
@@ -163,6 +194,15 @@ const Homepage = () => {
     >
       <S.Header>
         <h1>Homepage</h1>
+        <S.Button
+          onClick={handleComparison}
+          disabled={
+            Object.values(actions).filter((action) => action !== undefined)
+              .length === 0 || data.isFetching
+          }
+        >
+          Start comparison
+        </S.Button>
       </S.Header>
       <S.MainContainer>
         <div style={{ width: '100%' }}>
@@ -204,15 +244,6 @@ const Homepage = () => {
                 </section>
               ))}
             </S.SectionList>
-            <S.Button
-              onClick={handleComparison}
-              disabled={
-                Object.values(actions).filter((action) => action !== undefined)
-                  .length === 0 || data.isFetching
-              }
-            >
-              Start comparison
-            </S.Button>
           </S.ContentBlock>
         </div>
         {data.isFetching ? <ComparisonProgress items={['test']} /> : null}

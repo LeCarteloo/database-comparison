@@ -4,17 +4,17 @@ import { ComparisonData } from '../interfaces/interfaces';
 interface ComparisonProvider {
   children: ReactNode;
   comparisonData: ComparisonData[];
-  setComparisonData: () => {};
+  setComparisonData: (data: ComparisonData[]) => void;
 }
 
 interface ComparisonContext {
   comparisonData: ComparisonData[];
-  setComparisonData: () => void;
+  setComparisonData: (data: ComparisonData[]) => void;
 }
 
 const ComparisonContext = createContext<ComparisonContext>({
   comparisonData: [],
-  setComparisonData: () => {},
+  setComparisonData: (data: ComparisonData[]) => {},
 });
 
 export const ComparisonProvider = ({
@@ -39,7 +39,7 @@ export const useComparisonContext = () => {
 
   if (!context) {
     throw new Error(
-      'useUserContext hook can only be used within UserContext provider'
+      'useComparisonContext hook can only be used within ComparisonContext provider'
     );
   }
 

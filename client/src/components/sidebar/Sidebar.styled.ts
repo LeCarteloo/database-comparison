@@ -1,8 +1,13 @@
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
 
 interface OpenProp {
   open: boolean;
+}
+
+interface LinkProps {
+  disabled: boolean;
 }
 
 const Hamburger = styled.button<OpenProp>`
@@ -80,25 +85,35 @@ const List = styled.ul`
 
 const Item = styled.li`
   margin-top: 1em;
-  a {
-    border-radius: 2vh;
-    &:hover {
-      background-color: #26264e;
-    }
-    &.active {
-      color: #6fcf97;
-      background-color: #26264e;
-    }
-    &:active {
-      opacity: 0.8;
-    }
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    padding: 1em 1.3em;
-    text-decoration: none;
-    color: #fff;
-  }
 `;
 
-export { Aside, Nav, List, Item, Hamburger };
+const Link = styled(NavLink)<LinkProps>`
+  border-radius: 2vh;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 1em 1.3em;
+  text-decoration: none;
+  color: #fff;
+
+  ${({ disabled }) =>
+    disabled
+      ? css`
+          opacity: 0.4;
+          pointer-events: none;
+        `
+      : css`
+          &:hover {
+            background-color: #26264e;
+          }
+          &.active {
+            color: #6fcf97;
+            background-color: #26264e;
+          }
+          &:active {
+            opacity: 0.8;
+          }
+        `}
+`;
+
+export { Aside, Nav, List, Item, Hamburger, Link };

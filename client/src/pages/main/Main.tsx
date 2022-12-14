@@ -2,14 +2,18 @@ import { Sidebar } from '../../components';
 import * as S from './Main.styled';
 import { Routes, Route } from 'react-router-dom';
 import { Homepage, Insightspage, Overviewpage } from '../../pages';
-import { ComparisonProvider } from '../../context/ComparisonContext';
 import { useState } from 'react';
 import { ComparisonData } from '../../interfaces/interfaces';
+import { ComparisonProvider } from '../../context/ComparisonContext';
 
 const Main = () => {
   const [comparisonData, setComparisonData] = useState<ComparisonData[]>([]);
+
   return (
-    <ComparisonProvider comparisonData={[]} setComparisonData={() => ()}>
+    <ComparisonProvider
+      comparisonData={comparisonData}
+      setComparisonData={(data) => setComparisonData(data)}
+    >
       <S.HomeGrid>
         <Sidebar />
         <S.Main>
