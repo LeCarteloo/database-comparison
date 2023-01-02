@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Opening CSV file, add trycathc
-        $csv = array_map('str_getcsv', file('E:/Projekty/BadawczyProjektZespolowy/storage/app/public/employees.csv'));
+        $csv = array_map('str_getcsv', file(Files::getEmployeesCsv()));
         array_walk($csv, function(&$a) use ($csv) {
             $a = array_combine($csv[0], $a);
         });
