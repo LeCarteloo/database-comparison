@@ -43,7 +43,7 @@ class MySqlController extends Controller
             GROUP BY employee_id) X, (
             SELECT employee_id, title
             FROM titles
-            ORDER BY "DESC") Y
+            ORDER BY employee_id DESC) Y
             WHERE E.id = X.employee_id
             AND E.id = Y.employee_id
         ');

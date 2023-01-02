@@ -15,7 +15,7 @@ class CreateTitlesTable extends Migration
     {
         Schema::create('titles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->references('id')->on('employees');
+            $table->foreignId('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->string('title');
             $table->date('from_date');
             $table->date('to_date');
