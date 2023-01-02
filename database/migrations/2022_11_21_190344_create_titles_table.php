@@ -13,7 +13,15 @@ class CreateTitlesTable extends Migration
      */
     public function up()
     {
-        Schema::create('titles', function (Blueprint $table) {
+        Schema::connection('mysql')->create('titles', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id')->references('id')->on('employees')->onDelete('cascade');
+            $table->string('title');
+            $table->date('from_date');
+            $table->date('to_date');
+        });
+
+        Schema::connection('pgsql')->create('titles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->string('title');
@@ -29,6 +37,7 @@ class CreateTitlesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('titles');
+        Schema::connection('mysql')->dropIfExists('titles');
+        Schema::connection('pgsql')->dropIfExists('titles');
     }
 }

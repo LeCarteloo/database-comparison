@@ -33,7 +33,6 @@ class QueriesController extends Controller
 
         $mysqlEndTime = microtime(true) - $mysqlStartTime;
         $mysqlEndMemory =  memory_get_usage() - $mysqlStartMemory;
-
         ////////////////////////////////////////////////////
         
 
@@ -42,7 +41,7 @@ class QueriesController extends Controller
         $pgsqlStartMemory = memory_get_usage();
 
         //Zapytanie tutaj
-
+        $pgsqlResults = '';
         ////////
 
         $pgsqlEndTime = microtime(true) - $pgsqlStartTime;
@@ -56,7 +55,7 @@ class QueriesController extends Controller
         $clickHouseStartMemory = memory_get_usage();
 
         //Zapytanie tutaj
-
+        $clickhouseResults = '';
         ////////
 
         $clickHouseEndTime = microtime(true) - $clickHouseStartTime;
@@ -70,7 +69,7 @@ class QueriesController extends Controller
         $mongoDbStartMemory = memory_get_usage();
 
         //Zapytanie tutaj
-
+        $mongoDbResults = '';
         ////////
 
         $mongoDbEndTime = microtime(true) - $mongoDbStartTime;
@@ -82,18 +81,26 @@ class QueriesController extends Controller
             'mysql' => [
                 'time' => round($mysqlEndTime * 1000 -1.1, 2), //ms
                 'memory' => round($mysqlEndMemory / 1000000, 2), //MB
+                'query' => "?",
+                'result' => $mysqlResults,
             ],
             'pgsql' => [
                 'time' => round($pgsqlEndTime * 1000 -1.1, 2),
                 'memory' => round($pgsqlEndMemory / 1000000, 2),
+                'query' => "?",
+                'result' => $pgsqlResults,
             ],
             'clickhouse' => [
                 'time' => round($clickHouseEndTime * 1000 -1.1, 2),
                 'memory' => round($clickHouseEndMemory / 1000000, 2),
+                'query' => "?",
+                'result' => $clickhouseResults,
             ],
             'mongodb' => [
                 'time' => round($mongoDbEndTime * 1000 -1.1, 2),
                 'memory' => round($mongoDbEndMemory / 1000000, 2),
+                'query' => "?",
+                'result' => $mongoDbResults,
             ],
             // 'xxxx' => [
             //     'time' => round($mysqlEndTime * 1000 -1.1, 2),

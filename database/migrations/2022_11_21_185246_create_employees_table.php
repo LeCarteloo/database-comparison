@@ -13,7 +13,16 @@ class CreateEmployeesTable extends Migration
      */
     public function up()
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::connection('mysql')->create('employees', function (Blueprint $table) {
+            $table->id();
+            $table->date('birth_date');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->enum('gender', ['M', 'F']);
+            $table->date('hire_date');
+        });
+
+        Schema::connection('pgsql')->create('employees', function (Blueprint $table) {
             $table->id();
             $table->date('birth_date');
             $table->string('first_name');
@@ -30,6 +39,7 @@ class CreateEmployeesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employees');
+        Schema::connection('mysql')->dropIfExists('employees');
+        Schema::connection('pgsql')->dropIfExists('employees');
     }
 }

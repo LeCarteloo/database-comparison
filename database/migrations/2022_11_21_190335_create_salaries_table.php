@@ -13,7 +13,15 @@ class CreateSalariesTable extends Migration
      */
     public function up()
     {
-        Schema::create('salaries', function (Blueprint $table) {
+        Schema::connection('mysql')->create('salaries', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id')->references('id')->on('employees')->onDelete('cascade');
+            $table->integer('salary');
+            $table->date('from_date');
+            $table->date('to_date');
+        });
+
+        Schema::connection('pgsql')->create('salaries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->integer('salary');
@@ -29,6 +37,7 @@ class CreateSalariesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('salaries');
+        Schema::connection('mysql')->dropIfExists('salaries');
+        Schema::connection('pgsql')->dropIfExists('salaries');
     }
 }

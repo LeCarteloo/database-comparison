@@ -15,38 +15,22 @@ class TestDatabasesController extends Controller
     public function index()
     {
         $mysql = DB::connection('mysql')->getPdo();
-        if($mysql)
-        {
-            $mysqlStatus = "Połączono z MySql";
-        } else 
-        {
-            $mysqlStatus = "Nie udało się połączyć z MySql";
-        }
-
         $pgsql = DB::connection('pgsql')->getPdo();
-
-        if($pgsql)
-        {
-            $pgsqlStatus = "Połączono z pgsql";
-        } else 
-        {
-            $pgsqlStatus = "Nie udało się połączyć z pgsql";
-        }
-
         $clickhouse = DB::connection('clickhouse')->getPdo();
+        $mongodb = DB::connection('mongodb')->getPdo();
 
-        if($clickhouse)
-        {
-            $clickhouseStatus = "Połączono z clickhouse";
-        } else 
-        {
-            $clickhouseStatus = "Nie udało się połączyć z clickhouse";
-        }
-
-        return view('test', [
-            'mysql' => $mysqlStatus,
-            'pgsql' => $pgsqlStatus,
-            'clickhouse' => $clickhouseStatus,
+        $mysqlStatus = $mysql ? true : false;
+        $pgsqlStatus = $pgsql ? true : false;
+        $clickhouseStatus = $clickhouse ? true : false;
+        $mongodbStatus = $mongodb ? true : false;
+        
+        return response()->json([
+            'data' => [
+                'mysql' => $mysqlStatus,
+                'pgsql' => $pgsqlStatus,
+                'clickhouse' => $clickhouseStatus,
+                'mongodb' => $mongodbStatus,
+            ],
         ]);
     }
 }
