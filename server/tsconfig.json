@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "es2016",
+    "module": "commonjs",
+    "baseUrl": "./src",
+    "paths": {
+      "@/services/*": ["services/*"],
+      "@/controllers/*": ["controllers/*"]
+    },
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    /* Emit */
+    "outDir": "build",
+    /* Type Checking */
+    "strict": true,
+    /* Completeness */
+    "skipLibCheck": true
+  }
+}
