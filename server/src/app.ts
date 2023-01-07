@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import mysql from 'mysql2';
 import cors from 'cors';
 import morgan from 'morgan';
+import { connectDatabases } from './config/databases';
+import ClickhouseService from './services/Clickhouse.service';
 
 class App {
   public express: Application;
@@ -11,6 +13,7 @@ class App {
   constructor(controllers: any[], port: number) {
     this.express = express();
     this.port = port;
+    connectDatabases();
     this.initMiddleware();
     this.initMongoConn();
     // this.initMysqlCon();
@@ -39,33 +42,12 @@ class App {
 
   private async initMongoConn(): Promise<void> {
     const { MONGO_URI } = process.env;
-
+    mongoose.set('strictQuery', true);
     try {
       await mongoose.connect(`${MONGO_URI}`);
-      console.info('MongoDB connected');
+      console.info('Connected with MongoDB');
     } catch (error) {
       console.warn('Unable to connect with MongoDB');
-      process.exit(1);
-    }
-  }
-
-  private async initMysqlCon(): Promise<void> {
-    const { MYSQL_HOST, MYSQL_PORT, MYSQL_DB, MYSQL_USER, MYSQL_PASS } =
-      process.env;
-
-    try {
-      await mysql
-        .createPool({
-          port: Number(MYSQL_PORT),
-          host: MYSQL_HOST,
-          user: MYSQL_USER,
-          password: MYSQL_PASS,
-          database: MYSQL_DB,
-        })
-        .promise();
-      console.info('MYSQL connected');
-    } catch (error) {
-      console.warn('Unable to connect with MYSQL');
       process.exit(1);
     }
   }

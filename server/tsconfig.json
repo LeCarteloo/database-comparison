@@ -6,7 +6,8 @@
     "baseUrl": "./src",
     "paths": {
       "@/services/*": ["services/*"],
-      "@/controllers/*": ["controllers/*"]
+      "@/controllers/*": ["controllers/*"],
+      "@/config/*": ["config/*"]
     },
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

@@ -1,4 +1,6 @@
+import ClickhouseService from '@/services/Clickhouse.service';
 import MysqlService from '@/services/Mysql.service';
+import PgsqlService from '@/services/Pgsql.service';
 import { Router, Request, Response, NextFunction } from 'express';
 
 class ComparisonController {
@@ -23,11 +25,23 @@ class ComparisonController {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      const amount = req.params.amount;
+      const amount = Number(req.params.amount);
       const mysqlService = new MysqlService();
-      const result = await mysqlService.insert(Number(amount));
+      const mysqlResult = await mysqlService.insert(amount);
 
-      res.status(200).json(result);
+      const pgsql = new PgsqlService();
+      const pgsqlResult = await pgsql.insert(amount);
+
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.insert(amount);
+
+      console.log(clickhouseResult);
+
+      res.status(200).json({
+        'mysql-result': mysqlResult,
+        'pgsql-result': pgsqlResult,
+        'clickhouse-result': clickhouseResult,
+      });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -45,9 +59,19 @@ class ComparisonController {
   ): Promise<Response | void> {
     try {
       const mysqlService = new MysqlService();
-      const result = await mysqlService.select();
+      const mysqlResult = await mysqlService.select();
 
-      res.status(200).json(result);
+      const pgsql = new PgsqlService();
+      const pgsqlResult = await pgsql.select();
+
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.select();
+
+      res.status(200).json({
+        'mysql-result': mysqlResult,
+        'pgsql-result': pgsqlResult,
+        'clickhouse-result': clickhouseResult,
+      });
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);
