@@ -30,7 +30,7 @@ class PgsqlService {
     }
   }
 
-  //* Select data
+  //* Inserts data
   public async select(): Promise<any | Error> {
     try {
       const { memory, time } = await checkPerformance(() => {
@@ -39,8 +39,8 @@ class PgsqlService {
 
       return {
         // result: rows,
-        time: time,
         memory: memory,
+        time: time,
       };
     } catch (error) {
       if (error instanceof Error) {

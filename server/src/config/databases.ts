@@ -1,12 +1,12 @@
-import { createClient } from '@clickhouse/client';
-import mongoose from 'mongoose';
+import { ClickHouseClient, createClient } from '@clickhouse/client';
+import mongoose, { Connection } from 'mongoose';
 import mysql from 'mysql2';
 import pg from 'pg';
 import { red, green } from 'colors';
 
 let PostgresConnection: any;
 let MysqlConnection: any;
-let MongoConnection: any;
+let MongoConnection: Connection;
 let ClickhouseConnection: any;
 
 const connectDatabases = async () => {
@@ -36,9 +36,9 @@ const connectDatabases = async () => {
     try {
       const { MONGO_URI } = process.env;
       mongoose.set('strictQuery', true);
-      await mongoose.connect(`${MONGO_URI}`);
+      const conn = await mongoose.connect(`${MONGO_URI}`);
       console.log(green('- Connected with MongoDB'));
-      return mongoose;
+      return conn.connection;
     } catch (error) {
       console.log(red('- Unable to connect with MongoDB'));
       process.exit(1);
