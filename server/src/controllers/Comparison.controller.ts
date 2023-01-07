@@ -18,8 +18,8 @@ class ComparisonController {
     this.router.post(`${this.path}/csv`, this.insertCSV);
   }
 
-  //* @desc Insert records
-  //* @route POST /api/insert/:amount
+  //* @desc Insert CSV
+  //* @route POST /api/csv
   //* @access Public
   private async insertCSV(
     req: Request,
@@ -27,8 +27,8 @@ class ComparisonController {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.insert(amount);
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.insertCSV();
 
       // const pgsql = new PgsqlService();
       // const pgsqlResult = await pgsql.insert(amount);
@@ -40,7 +40,7 @@ class ComparisonController {
       const mongodbResult = await mongodb.insertCSV();
 
       res.status(200).json({
-        // 'mysql-result': mysqlResult,
+        'mysql-result': mysqlResult,
         // 'pgsql-result': pgsqlResult,
         // 'clickhouse-result': clickhouseResult,
         'mongodb-result': mongodbResult,

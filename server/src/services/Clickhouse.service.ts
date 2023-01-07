@@ -28,6 +28,74 @@ class ClickhouseService {
     }
   }
 
+  //* Insert data from CSV file
+  public async insertCSV() {
+    try {
+      const employees = await csvtojson().fromFile(
+        './src/data/db_employees.csv',
+      );
+      const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
+      const titles = await csvtojson().fromFile('./src/data/db_titles.csv');
+
+      let employeesArray: any[] = [];
+      let salaryArray: any[] = [];
+      let titlesArray: any[] = [];
+
+      employees.forEach((employee: any) => {
+        employeesArray.push([
+          employee.employee_id,
+          employee.birth_date,
+          employee.first_name,
+          employee.last_name,
+          employee.gender,
+          employee.hire_date,
+        ]);
+      });
+
+      salary.forEach((salary: any) => {
+        salaryArray.push([
+          salary.employee_id,
+          salary.salary,
+          salary.from_date,
+          salary.to_date,
+        ]);
+      });
+
+      titles.forEach((titles: any) => {
+        titlesArray.push([
+          titles.employee_id,
+          titles.title,
+          titles.from_date,
+          titles.to_date,
+        ]);
+      });
+
+      const { memory, time } = await checkPerformance(() => {
+        this.conn.query(
+          `INSERT INTO employees (employee_id, birth_date, first_name, last_name, gender, hire_date) VALUES ?`,
+          [employeesArray],
+        );
+        this.conn.query(
+          `INSERT INTO salary (employee_id, salary, from_date, to_date) VALUES ?`,
+          [salaryArray],
+        );
+        this.conn.query(
+          `INSERT INTO titles (employee_id, title, from_date, to_date) VALUES ?`,
+          [titlesArray],
+        );
+      });
+
+      return {
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
   //* Select data
   public async insert(amount: number) {
     try {
@@ -58,10 +126,14 @@ class ClickhouseService {
     try {
       await this.conn.exec({
         query: `
-            CREATE TABLE IF NOT EXISTS users(
+            CREATE TABLE IF NOT EXISTS employees(
                 id UInt64, 
-                title String, 
-                contest String
+                employee_id String,
+                birth_date String,
+                first_name String,
+                last_name String,
+                gender String,
+                hire_date String
             ) ENGINE = MergeTree ORDER BY id;
             `,
       });

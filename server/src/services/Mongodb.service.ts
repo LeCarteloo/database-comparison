@@ -8,14 +8,13 @@ class MongodbService {
 
   constructor() {
     this.createCollections();
-    this.insertCSV();
   }
 
   //* Select data
   public async select() {
     try {
       const { memory, time } = await checkPerformance(() => {
-        return mongoose.connection.db.collection('users').find();
+        return mongoose.connection.db.collection('salary').find();
       });
 
       return {
