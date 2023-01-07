@@ -1,16 +1,55 @@
-import morgan from 'morgan';
+import { createClient } from '@clickhouse/client';
+import mongoose from 'mongoose';
 import mysql from 'mysql2';
 import pg from 'pg';
+import { red, green } from 'colors';
 
-let pgConn: any;
-let mysqlConn: any;
+let PostgresConnection: any;
+let MysqlConnection: any;
+let MongoConnection: any;
+let ClickhouseConnection: any;
 
-const connectDatabases = () => {
+const connectDatabases = async () => {
+  //* ClickHouse
+  const connectClickHouse = async () => {
+    try {
+      const { CH_PORT, CH_HOST } = process.env;
+      const conn = createClient({
+        host: `http://${CH_HOST}:${CH_PORT}`,
+      });
+
+      const isAlive = await conn.ping();
+
+      if (!isAlive) {
+        throw new Error('');
+      }
+
+      console.log(green('- Connected with ClickHouse'));
+      return conn;
+    } catch (error) {
+      console.log(red('- Unable to connect with ClickHouse'));
+    }
+  };
+
+  //* Mongodb
+  const connectMongodb = async () => {
+    try {
+      const { MONGO_URI } = process.env;
+      mongoose.set('strictQuery', true);
+      await mongoose.connect(`${MONGO_URI}`);
+      console.log(green('- Connected with MongoDB'));
+      return mongoose;
+    } catch (error) {
+      console.log(red('- Unable to connect with MongoDB'));
+      process.exit(1);
+    }
+  };
+
   //* Pgsql
-  const connectPgsql = () => {
+  const connectPgsql = async () => {
     try {
       const { PG_HOST, PG_PORT, PG_DB, PG_USER, PG_PASS } = process.env;
-      const pgConn = new pg.Client({
+      const PostgresConnection = new pg.Client({
         port: Number(PG_PORT),
         host: PG_HOST,
         user: PG_USER,
@@ -18,22 +57,22 @@ const connectDatabases = () => {
         database: PG_DB,
       });
 
-      pgConn.connect();
+      await PostgresConnection.connect();
 
-      console.log('Connected with Postgresql');
-      return pgConn;
+      console.log(green('- Connected with Postgresql'));
+      return PostgresConnection;
     } catch (error) {
-      console.log('Unable to connect with Postgresql');
+      console.log(red('- Unable to connect with Postgresql'));
     }
   };
 
   //* Mysql
-  const connectMysql = () => {
+  const connectMysql = async () => {
     try {
       const { MYSQL_HOST, MYSQL_PORT, MYSQL_DB, MYSQL_USER, MYSQL_PASS } =
         process.env;
-      const mysqlConn = mysql
-        .createPool({
+      const MysqlConnection = mysql
+        .createConnection({
           port: Number(MYSQL_PORT),
           host: MYSQL_HOST,
           user: MYSQL_USER,
@@ -42,15 +81,25 @@ const connectDatabases = () => {
         })
         .promise();
 
-      console.log('Connected with Mysql');
-      return mysqlConn;
+      await MysqlConnection.connect();
+
+      console.log(green('- Connected with Mysql'));
+      return MysqlConnection;
     } catch (error) {
-      console.log('Unable to connect with Mysql');
+      console.log(red('- Unable to connect with Mysql'));
     }
   };
 
-  pgConn = connectPgsql();
-  mysqlConn = connectMysql();
+  PostgresConnection = await connectPgsql();
+  MysqlConnection = await connectMysql();
+  MongoConnection = await connectMongodb();
+  ClickhouseConnection = await connectClickHouse();
 };
 
-export { connectDatabases, pgConn, mysqlConn };
+export {
+  connectDatabases,
+  PostgresConnection,
+  MysqlConnection,
+  MongoConnection,
+  ClickhouseConnection,
+};

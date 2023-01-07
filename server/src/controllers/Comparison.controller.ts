@@ -6,6 +6,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 class ComparisonController {
   public path = '';
   public router = Router();
+  // private mysqlService = new MysqlService();
 
   constructor() {
     this.initRoutes();
@@ -34,8 +35,6 @@ class ComparisonController {
 
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.insert(amount);
-
-      console.log(clickhouseResult);
 
       res.status(200).json({
         'mysql-result': mysqlResult,

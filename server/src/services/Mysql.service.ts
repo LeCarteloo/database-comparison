@@ -1,8 +1,8 @@
-import { mysqlConn } from '@/config/databases';
-import mysql, { Connection, QueryError } from 'mysql2';
+import { MysqlConnection } from '@/config/databases';
+import checkPerformance from '@/utilis/CheckPerformance';
 
 class MysqlService {
-  private conn = mysqlConn;
+  private conn = MysqlConnection;
 
   constructor() {
     this.createTables();
@@ -11,13 +11,18 @@ class MysqlService {
   //* Inserting data
   public async insert(amount: number): Promise<any | Error> {
     try {
-      const [rows] = await this.conn.execute(`
-        INSERT INTO users (title, contest)
-        VALUES ('Test1', 'Test1'),
-        ('Test2', 'Test2')
+      const { memory, time } = await checkPerformance(() => {
+        return this.conn.execute(`
+          INSERT INTO users (title, contest)
+          VALUES ('Test1', 'Test1'),
+          ('Test2', 'Test2')
       `);
+      });
 
-      return rows;
+      return {
+        memory: memory,
+        time: time,
+      };
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -29,16 +34,18 @@ class MysqlService {
   //* Selecting data
   public async select(): Promise<any | Error> {
     try {
-      const start = performance.now();
+      const { memory, time } = await checkPerformance(() => {
+        return this.conn.execute(`SELECT * FROM users`);
+      });
 
-      const [rows] = await this.conn.execute(`
-        SELECT * FROM users
-      `);
+      // const start = performance.now();
+      // const test = await this.conn.execute(`SELECT * FROM users`);
+      // const end = performance.now();
 
-      const end = performance.now();
       return {
-        // result: rows,
-        time: end - start,
+        // result: result,
+        memory: memory,
+        time: time,
       };
     } catch (error) {
       if (error instanceof Error) {

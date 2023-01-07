@@ -1,7 +1,8 @@
-import { pgConn } from '@/config/databases';
+import { PostgresConnection } from '@/config/databases';
+import checkPerformance from '@/utilis/CheckPerformance';
 
 class PgsqlService {
-  private conn = pgConn;
+  private conn = PostgresConnection;
 
   constructor() {
     this.createTables();
@@ -10,17 +11,16 @@ class PgsqlService {
   //* Inserts data
   public async insert(amount: number): Promise<any | Error> {
     try {
-      const start = performance.now();
-
-      const result = await this.conn.query(
-        `INSERT INTO users(title, contest) VALUES ('Test1', 'Test1');`,
-      );
-
-      const end = performance.now();
+      const { memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `INSERT INTO users(title, contest) VALUES ('Test1', 'Test1');`,
+        );
+      });
 
       return {
-        result: result,
-        time: end - start,
+        // result: result,
+        memory: memory,
+        time: time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -30,19 +30,17 @@ class PgsqlService {
     }
   }
 
+  //* Select data
   public async select(): Promise<any | Error> {
     try {
-      const start = performance.now();
-
-      const { rows } = await this.conn.query(`
-        SELECT * FROM users
-      `);
-
-      const end = performance.now();
+      const { memory, time } = await checkPerformance(() => {
+        return this.conn.query(` SELECT * FROM users`);
+      });
 
       return {
         // result: rows,
-        time: end - start,
+        time: time,
+        memory: memory,
       };
     } catch (error) {
       if (error instanceof Error) {

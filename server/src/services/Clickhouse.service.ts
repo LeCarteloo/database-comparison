@@ -1,27 +1,25 @@
-import { createClient, ClickHouseClient } from '@clickhouse/client';
+import { ClickhouseConnection } from '@/config/databases';
+import checkPerformance from '@/utilis/CheckPerformance';
 
 class ClickhouseService {
-  private conn: ClickHouseClient;
+  private conn = ClickhouseConnection;
 
   constructor() {
-    this.conn = this.initClickhouseCon();
     this.createTables();
   }
 
   //* Insert data
   public async select() {
     try {
-      const start = performance.now();
-      console.time('test');
-      await this.conn.exec({
-        query: 'SELECT * FROM users',
+      const { memory, time } = await checkPerformance(() => {
+        return this.conn.exec({
+          query: 'SELECT * FROM users',
+        });
       });
-      console.timeEnd('test');
-
-      const end = performance.now();
 
       return {
-        time: end - start,
+        memory: memory,
+        time: time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -33,20 +31,20 @@ class ClickhouseService {
   //* Select data
   public async insert(amount: number) {
     try {
-      const start = performance.now();
-      const result = await this.conn.insert({
-        table: 'users',
-        values: [
-          { id: 1, title: 'Test1', contest: 'Test1' },
-          { id: 2, title: 'Test2', contest: 'Test2' },
-        ],
-        format: 'JSONEachRow',
+      const { memory, time } = await checkPerformance(() => {
+        return this.conn.insert({
+          table: 'users',
+          values: [
+            { id: 1, title: 'Test1', contest: 'Test1' },
+            { id: 2, title: 'Test2', contest: 'Test2' },
+          ],
+          format: 'JSONEachRow',
+        });
       });
-      const end = performance.now();
 
       return {
-        result: result,
-        time: end - start,
+        memory: memory,
+        time: time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -66,25 +64,12 @@ class ClickhouseService {
                 contest String
             ) ENGINE = MergeTree ORDER BY id;
             `,
-        // clickhouse_settings: {
-        //   wait_end_of_query: 1,
-        // },
       });
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
       }
     }
-  }
-
-  private initClickhouseCon() {
-    const { CH_PORT, CH_HOST } = process.env;
-
-    const conn = createClient({
-      host: `http://${CH_HOST}:${CH_PORT}`,
-    });
-
-    return conn;
   }
 }
 

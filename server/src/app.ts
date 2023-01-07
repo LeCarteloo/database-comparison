@@ -1,10 +1,8 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
-import mysql from 'mysql2';
 import cors from 'cors';
 import morgan from 'morgan';
 import { connectDatabases } from './config/databases';
-import ClickhouseService from './services/Clickhouse.service';
+import { blue } from 'colors';
 
 class App {
   public express: Application;
@@ -15,8 +13,6 @@ class App {
     this.port = port;
     connectDatabases();
     this.initMiddleware();
-    this.initMongoConn();
-    // this.initMysqlCon();
     this.initControllers(controllers);
     this.initHealthCheck();
   }
@@ -40,18 +36,6 @@ class App {
     this.express.use(express.urlencoded({ extended: false }));
   }
 
-  private async initMongoConn(): Promise<void> {
-    const { MONGO_URI } = process.env;
-    mongoose.set('strictQuery', true);
-    try {
-      await mongoose.connect(`${MONGO_URI}`);
-      console.info('Connected with MongoDB');
-    } catch (error) {
-      console.warn('Unable to connect with MongoDB');
-      process.exit(1);
-    }
-  }
-
   private initControllers(controllers: any[]): void {
     controllers.forEach((controller: any) => {
       this.express.use('/api', controller.router);
@@ -60,7 +44,8 @@ class App {
 
   public listen(): void {
     this.express.listen(this.port, () => {
-      console.log(`Server is running on port ${this.port}`);
+      console.log(blue(`Server is running on port ${this.port}`));
+      console.log('\nDatabase connections:\n');
     });
   }
 }
