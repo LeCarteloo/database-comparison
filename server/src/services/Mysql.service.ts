@@ -12,7 +12,7 @@ class MysqlService {
   public async insert(amount: number): Promise<any | Error> {
     try {
       const [rows] = await this.conn.execute(`
-        INSERT INTO user (title, contest)
+        INSERT INTO users (title, contest)
         VALUES ('Test1', 'Test1'),
         ('Test2', 'Test2')
       `);
@@ -29,11 +29,17 @@ class MysqlService {
   //* Selecting data
   public async select(): Promise<any | Error> {
     try {
+      const start = performance.now();
+
       const [rows] = await this.conn.execute(`
-        SELECT * FROM user
+        SELECT * FROM users
       `);
 
-      return rows;
+      const end = performance.now();
+      return {
+        // result: rows,
+        time: end - start,
+      };
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -45,7 +51,7 @@ class MysqlService {
   //* Create tables
   private async createTables(): Promise<any | Error> {
     try {
-      await this.conn.execute(`CREATE TABLE IF NOT EXISTS user (
+      await this.conn.execute(`CREATE TABLE IF NOT EXISTS users (
           id integer PRIMARY KEY AUTO_INCREMENT,
           title VARCHAR(255) NOT NULL,
           contest TEXT NOT NULL

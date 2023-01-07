@@ -10,10 +10,18 @@ class PgsqlService {
   //* Inserts data
   public async insert(amount: number): Promise<any | Error> {
     try {
+      const start = performance.now();
+
       const result = await this.conn.query(
         `INSERT INTO users(title, contest) VALUES ('Test1', 'Test1');`,
       );
-      return result;
+
+      const end = performance.now();
+
+      return {
+        result: result,
+        time: end - start,
+      };
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
@@ -24,11 +32,18 @@ class PgsqlService {
 
   public async select(): Promise<any | Error> {
     try {
+      const start = performance.now();
+
       const { rows } = await this.conn.query(`
         SELECT * FROM users
       `);
 
-      return rows;
+      const end = performance.now();
+
+      return {
+        // result: rows,
+        time: end - start,
+      };
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);

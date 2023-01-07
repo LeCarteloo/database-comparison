@@ -11,12 +11,18 @@ class ClickhouseService {
   //* Insert data
   public async select() {
     try {
-      const result = await this.conn.query({
+      const start = performance.now();
+      console.time('test');
+      await this.conn.exec({
         query: 'SELECT * FROM users',
-        format: 'JSONEachRow',
       });
+      console.timeEnd('test');
 
-      return await result.json();
+      const end = performance.now();
+
+      return {
+        time: end - start,
+      };
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -27,6 +33,7 @@ class ClickhouseService {
   //* Select data
   public async insert(amount: number) {
     try {
+      const start = performance.now();
       const result = await this.conn.insert({
         table: 'users',
         values: [
@@ -35,8 +42,12 @@ class ClickhouseService {
         ],
         format: 'JSONEachRow',
       });
+      const end = performance.now();
 
-      return true;
+      return {
+        result: result,
+        time: end - start,
+      };
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
