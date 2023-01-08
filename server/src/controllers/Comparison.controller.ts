@@ -30,8 +30,8 @@ class ComparisonController {
       const mysqlService = new MysqlService();
       const mysqlResult = await mysqlService.insertCSV();
 
-      // const pgsql = new PgsqlService();
-      // const pgsqlResult = await pgsql.insert(amount);
+      const pgsql = new PgsqlService();
+      const pgsqlResult = await pgsql.insertCSV();
 
       // const clickhouse = new ClickhouseService();
       // const clickhouseResult = await clickhouse.insert(amount);
@@ -41,7 +41,7 @@ class ComparisonController {
 
       res.status(200).json({
         'mysql-result': mysqlResult,
-        // 'pgsql-result': pgsqlResult,
+        'pgsql-result': pgsqlResult,
         // 'clickhouse-result': clickhouseResult,
         'mongodb-result': mongodbResult,
       });
