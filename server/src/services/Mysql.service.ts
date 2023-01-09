@@ -24,7 +24,7 @@ class MysqlService {
 
       employees.forEach((employee: any) => {
         employeesArray.push([
-          employee.employee_id,
+          employee.id,
           employee.birth_date,
           employee.first_name,
           employee.last_name,
@@ -53,7 +53,7 @@ class MysqlService {
 
       const { memory, time } = await checkPerformance(() => {
         this.conn.query(
-          `INSERT INTO employees (employee_id, birth_date, first_name, last_name, gender, hire_date) VALUES ?`,
+          `INSERT INTO employees (id, birth_date, first_name, last_name, gender, hire_date) VALUES ?`,
           [employeesArray],
         );
         this.conn.query(
@@ -100,21 +100,19 @@ class MysqlService {
     }
   }
 
-  //* Selecting data
-  public async select(): Promise<any | Error> {
+  //* Easy select: Returns users with salary higher than 3000
+  public async selectEasy(): Promise<any | Error> {
     try {
-      const { memory, time } = await checkPerformance(() => {
-        return this.conn.execute(`SELECT * FROM salary`);
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(`SELECT * FROM salary s WHERE s.salary >= 3000`);
       });
 
-      // const start = performance.now();
-      // const test = await this.conn.execute(`SELECT * FROM users`);
-      // const end = performance.now();
+      const [rows] = result;
 
       return {
-        // result: result,
-        memory: memory,
-        time: time,
+        records: rows.length,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -128,7 +126,7 @@ class MysqlService {
   private async createTables(): Promise<any | Error> {
     try {
       await this.conn.execute(`CREATE TABLE IF NOT EXISTS employees (
-        employee_id VARCHAR(255),
+        id VARCHAR(255),
         birth_date VARCHAR(255),
         first_name VARCHAR(255),
         last_name VARCHAR(255),
@@ -137,7 +135,7 @@ class MysqlService {
         )`);
       await this.conn.execute(`CREATE TABLE IF NOT EXISTS salary (
         employee_id VARCHAR(255),
-        salary VARCHAR(255),
+        salary INT,
         from_date VARCHAR(255),
         to_date VARCHAR(255)
         )`);

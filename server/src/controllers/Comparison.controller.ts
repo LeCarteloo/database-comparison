@@ -14,7 +14,7 @@ class ComparisonController {
 
   private initRoutes(): void {
     this.router.post(`${this.path}/insert/:amount`, this.insert);
-    this.router.get(`${this.path}/select`, this.select);
+    this.router.get(`${this.path}/select/easy`, this.select);
     this.router.post(`${this.path}/csv`, this.insertCSV);
   }
 
@@ -97,16 +97,16 @@ class ComparisonController {
   ): Promise<Response | void> {
     try {
       const mysqlService = new MysqlService();
-      const mysqlResult = await mysqlService.select();
+      const mysqlResult = await mysqlService.selectEasy();
 
       const pgsql = new PgsqlService();
-      const pgsqlResult = await pgsql.select();
+      const pgsqlResult = await pgsql.selectEasy();
 
       const clickhouse = new ClickhouseService();
-      const clickhouseResult = await clickhouse.select();
+      const clickhouseResult = await clickhouse.selectEasy();
 
       const mongodb = new MongodbService();
-      const mongodbResult = await mongodb.select();
+      const mongodbResult = await mongodb.selectEasy();
 
       res.status(200).json({
         'mysql-result': mysqlResult,

@@ -11,15 +11,18 @@ class MongodbService {
   }
 
   //* Select data
-  public async select() {
+  public async selectEasy() {
     try {
-      const { memory, time } = await checkPerformance(() => {
-        return mongoose.connection.db.collection('salary').find();
+      const { result, memory, time } = await checkPerformance(() => {
+        return mongoose.connection.db
+          .collection('salary')
+          .find({ salary: { $gt: 3000 } });
       });
 
       return {
-        memory: memory,
-        time: time,
+        records: result,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
