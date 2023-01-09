@@ -30,19 +30,19 @@ class ComparisonController {
       const mysqlService = new MysqlService();
       const mysqlResult = await mysqlService.insertCSV();
 
-      // const pgsql = new PgsqlService();
-      // const pgsqlResult = await pgsql.insert(amount);
-
-      // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.insert(amount);
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.insertCSV();
 
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.insertCSV();
 
+      // const pgsql = new PgsqlService();
+      // const pgsqlResult = await pgsql.insert(amount);
+
       res.status(200).json({
         'mysql-result': mysqlResult,
         // 'pgsql-result': pgsqlResult,
-        // 'clickhouse-result': clickhouseResult,
+        'clickhouse-result': clickhouseResult,
         'mongodb-result': mongodbResult,
       });
     } catch (error) {
