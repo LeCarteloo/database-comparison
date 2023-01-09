@@ -5,13 +5,13 @@ import { importCsvToPgsql } from '@/utilis/ImportCSV';
 class PgsqlService {
   private conn = PostgresConnection;
 
-  constructor() {
-    this.createTables();
-  }
+  constructor() {}
 
   //* Insert data from CSV file
   public async insertCSV() {
     try {
+      await this.createTables();
+
       const { memory, time } = await checkPerformance(async () => {
         await importCsvToPgsql(this.conn, 'salary', './src/data/db_salary.csv');
         await importCsvToPgsql(
@@ -55,12 +55,34 @@ class PgsqlService {
     }
   }
 
-  //* Easy select: Returns users with salary higher than 3000
+  //* Easy select: Returns salaries higher than 3000
   public async selectEasy(): Promise<any | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
           ` SELECT * FROM salary s WHERE s.salary >= 3000`,
+        );
+      });
+
+      return {
+        records: result.rows.length,
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Medium select: Returns all salaries
+  public async selectMedium(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
         );
       });
 

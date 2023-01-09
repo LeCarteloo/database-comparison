@@ -14,7 +14,8 @@ class ComparisonController {
 
   private initRoutes(): void {
     this.router.post(`${this.path}/insert/:amount`, this.insert);
-    this.router.get(`${this.path}/select/easy`, this.select);
+    this.router.get(`${this.path}/select/easy`, this.selectEasy);
+    this.router.get(`${this.path}/select/medium`, this.selectMedium);
     this.router.post(`${this.path}/csv`, this.insertCSV);
   }
 
@@ -29,15 +30,20 @@ class ComparisonController {
     try {
       const mysqlService = new MysqlService();
       const mysqlResult = await mysqlService.insertCSV();
+      console.log('mysql');
 
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.insertCSV();
 
+      console.log('clickhouse');
+
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.insertCSV();
+      console.log('pgsql');
 
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.insertCSV();
+      console.log('mongodb');
 
       res.status(200).json({
         'mysql-result': mysqlResult,
@@ -88,9 +94,9 @@ class ComparisonController {
   }
 
   //* @desc Select records
-  //* @route GET /api/select
+  //* @route GET /api/select/easy
   //* @access Public
-  private async select(
+  private async selectEasy(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -105,14 +111,48 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.selectEasy();
 
-      const mongodb = new MongodbService();
-      const mongodbResult = await mongodb.selectEasy();
+      // const mongodb = new MongodbService();
+      // const mongodbResult = await mongodb.selectEasy();
 
       res.status(200).json({
         'mysql-result': mysqlResult,
         'pgsql-result': pgsqlResult,
         'clickhouse-result': clickhouseResult,
-        'mongodb-result': mongodbResult,
+        'mongodb-result': 'WIP',
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  }
+
+  //* @desc Select records
+  //* @route GET /api/select/medium
+  //* @access Public
+  private async selectMedium(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.selectMedium();
+
+      const pgsql = new PgsqlService();
+      const pgsqlResult = await pgsql.selectMedium();
+
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.selectMedium();
+
+      // const mongodb = new MongodbService();
+      // const mongodbResult = await mongodb.selectMedium();
+
+      res.status(200).json({
+        'mysql-result': mysqlResult,
+        'pgsql-result': pgsqlResult,
+        'clickhouse-result': clickhouseResult,
+        'mongodb-result': 'WIP',
       });
     } catch (error) {
       if (error instanceof Error) {

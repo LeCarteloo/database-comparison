@@ -1,14 +1,12 @@
 import { MongoConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
-import mongoose from 'mongoose';
+import mongoose, { mongo, Schema } from 'mongoose';
 import csvtojson from 'csvtojson';
 
 class MongodbService {
   private conn = MongoConnection;
 
-  constructor() {
-    this.createCollections();
-  }
+  constructor() {}
 
   //* Select data
   public async selectEasy() {
@@ -61,6 +59,7 @@ class MongodbService {
   //* Insert data from CSV file
   public async insertCSV() {
     try {
+      await this.createCollections();
       const employees = await csvtojson().fromFile(
         './src/data/db_employees.csv',
       );

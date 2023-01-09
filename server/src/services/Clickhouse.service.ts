@@ -5,11 +5,9 @@ import fs from 'fs';
 class ClickhouseService {
   private conn = ClickhouseConnection;
 
-  constructor() {
-    this.createTables();
-  }
+  constructor() {}
 
-  //* Easy select: Returns users with salary higher than 3000
+  //* Easy select: Returns salaries higher than 3000
   public async selectEasy() {
     try {
       const { result, memory, time } = await checkPerformance(() => {
@@ -19,7 +17,29 @@ class ClickhouseService {
       });
 
       return {
-        records: (await result.json())[0],
+        records: (await result.json()).data.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  //* Medium select: Returns all salaries
+  public async selectMedium() {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query:
+            "SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id",
+        });
+      });
+
+      return {
+        records: (await result.json()).data.length,
         memory,
         time,
       };
@@ -69,10 +89,14 @@ class ClickhouseService {
     try {
       const { memory, time } = await checkPerformance(() => {
         return this.conn.insert({
-          table: 'users',
+          table: 'salary',
           values: [
-            { id: 1, title: 'Test1', contest: 'Test1' },
-            { id: 2, title: 'Test2', contest: 'Test2' },
+            {
+              employee_id: 1,
+              salary: 333,
+              from_date: 'Test1',
+              to_date: 'TEST',
+            },
           ],
           format: 'JSONEachRow',
         });
