@@ -99,6 +99,34 @@ class PgsqlService {
     }
   }
 
+  //* Hard select
+  public async selectHard(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `SELECT id, first_name, last_name, gender, hire_date, s.how_many_withdrawals, s.smallest_payout, s.biggest_payout, t.how_many_titles, t.last_promotion
+          FROM employees AS e
+          LEFT JOIN(SELECT count(salary) as how_many_withdrawals, max(salary) as biggest_payout, min(salary) as smallest_payout, employee_id FROM salary
+          GROUP BY employee_id) AS s
+          ON e.id = s.employee_id
+          LEFT JOIN(SELECT count(title) as how_many_titles, employee_id, MAX(from_date) as last_promotion FROM titles GROUP BY employee_id) AS t
+          ON e.id = t.employee_id`,
+        );
+      });
+
+      return {
+        records: result.rows.length,
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
   //* Create tables
   private async createTables(): Promise<any | Error> {
     try {

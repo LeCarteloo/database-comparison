@@ -16,6 +16,7 @@ class ComparisonController {
     this.router.post(`${this.path}/insert/:amount`, this.insert);
     this.router.get(`${this.path}/select/easy`, this.selectEasy);
     this.router.get(`${this.path}/select/medium`, this.selectMedium);
+    this.router.get(`${this.path}/select/hard`, this.selectHard);
     this.router.post(`${this.path}/csv`, this.insertCSV);
   }
 
@@ -147,6 +148,40 @@ class ComparisonController {
 
       // const mongodb = new MongodbService();
       // const mongodbResult = await mongodb.selectMedium();
+
+      res.status(200).json({
+        'mysql-result': mysqlResult,
+        'pgsql-result': pgsqlResult,
+        'clickhouse-result': clickhouseResult,
+        'mongodb-result': 'WIP',
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  }
+
+  //* @desc Select records
+  //* @route GET /api/select/hard
+  //* @access Public
+  private async selectHard(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.selectHard();
+
+      const pgsql = new PgsqlService();
+      const pgsqlResult = await pgsql.selectHard();
+
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.selectHard();
+
+      // const mongodb = new MongodbService();
+      // const mongodbResult = await mongodb.selectHard();
 
       res.status(200).json({
         'mysql-result': mysqlResult,

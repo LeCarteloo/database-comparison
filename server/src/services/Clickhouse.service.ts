@@ -28,6 +28,30 @@ class ClickhouseService {
     }
   }
 
+  //* Hard select
+  public async selectHard() {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query: `SELECT e.id, e.first_name, e.last_name, e.gender, e.hire_date, s.how_many_withdrawals, s.smallest_payout, s.biggest_payout, t.how_many_titles, t.last_promotion
+            FROM employees AS e,
+            (SELECT count(salary) as how_many_withdrawals, max(salary) as biggest_payout, min(salary) as smallest_payout, employee_id FROM salary GROUP BY employee_id) AS s,
+            (SELECT count(title) as how_many_titles, employee_id, MAX(from_date) as last_promotion FROM titles GROUP BY employee_id) AS t
+            WHERE e.id = s.employee_id AND e.id = t.employee_id`,
+        });
+      });
+
+      return {
+        records: (await result.json()).data.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
   //* Medium select: Returns all salaries
   public async selectMedium() {
     try {
