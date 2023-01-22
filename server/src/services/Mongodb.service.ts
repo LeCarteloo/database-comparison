@@ -8,17 +8,36 @@ class MongodbService {
 
   constructor() {}
 
-  //* Select data
+  //* Easy select: Returns salaries higher than 3000
   public async selectEasy() {
     try {
-      const { result, memory, time } = await checkPerformance(() => {
-        return mongoose.connection.db
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await mongoose.connection.db
           .collection('salary')
-          .find({ salary: { $gt: 3000 } });
+          .find({ salary: { $gte: 3000 } })
+          .toArray();
       });
 
       return {
-        records: result,
+        records: result.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  //* SELECT * FROM salary AS s, employees AS e, titles AS t
+  //* WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id
+  public async selectMedium() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {});
+
+      return {
+        records: result.length,
         memory,
         time,
       };
@@ -66,10 +85,45 @@ class MongodbService {
       const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
       const titles = await csvtojson().fromFile('./src/data/db_titles.csv');
 
+      // TODO: Do it later without forEaches (WIP)
+      const salaryWithTypes: any[] = [];
+      const employeesWithTypes: any[] = [];
+      const titlesWithTypes: any[] = [];
+
+      salary.forEach((sal) => {
+        salaryWithTypes.push({
+          ...sal,
+          employee_id: parseInt(sal.employee_id),
+          salary: parseInt(sal.salary),
+          from_date: new Date(sal.from_date),
+          to_date: new Date(sal.to_date),
+        });
+      });
+
+      employees.forEach((emp) => {
+        employeesWithTypes.push({
+          ...emp,
+          id: parseInt(emp.id),
+          birth_date: new Date(emp.birth_date),
+          hire_date: new Date(emp.hire_date),
+        });
+      });
+
+      titles.forEach((tit) => {
+        titlesWithTypes.push({
+          ...tit,
+          employee_id: parseInt(tit.employee_id),
+          from_date: new Date(tit.from_date),
+          to_date: new Date(tit.to_date),
+        });
+      });
+
       const { memory, time } = await checkPerformance(() => {
-        mongoose.connection.db.collection('employees').insertMany(employees);
-        mongoose.connection.db.collection('salary').insertMany(salary);
-        mongoose.connection.db.collection('titles').insertMany(titles);
+        mongoose.connection.db
+          .collection('employees')
+          .insertMany(employeesWithTypes);
+        mongoose.connection.db.collection('salary').insertMany(salaryWithTypes);
+        mongoose.connection.db.collection('titles').insertMany(titlesWithTypes);
       });
 
       return {
