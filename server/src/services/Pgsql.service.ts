@@ -1,6 +1,7 @@
 import { PostgresConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
 import { importCsvToPgsql } from '@/utilis/ImportCSV';
+import csvtojson from 'csvtojson';
 
 class PgsqlService {
   private conn = PostgresConnection;
@@ -36,14 +37,29 @@ class PgsqlService {
   //* Inserts data
   public async insert(amount: number): Promise<any | Error> {
     try {
+      const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
+      let values: any[] = [];
+
+      for (let i = 0; i < amount; i++) {
+        if (!salary[i]) break;
+        values.push([
+          salary[i].employee_id,
+          salary[i].salary,
+          salary[i].from_date,
+          salary[i].to_date,
+        ]);
+      }
+
       const { memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `INSERT INTO users(title, contest) VALUES ('Test1', 'Test1');`,
+          `INSERT INTO salary(employee_id, salary, from_date, to_date) VALUES ${values
+            .map((val) => `(${val[0]}, ${val[1]}, ${val[2]}, ${val[3]})`)
+            .join(',')};`,
         );
       });
 
       return {
-        // result: result,
+        result: amount,
         memory: memory,
         time: time,
       };
