@@ -1,15 +1,12 @@
 import * as S from './Overview.styled';
 import { motion } from 'framer-motion';
 import {
-  LineChart,
-  Line,
-  CartesianGrid,
   XAxis,
   YAxis,
   Bar,
   BarChart,
   ResponsiveContainer,
-  Tooltip,
+  LabelList,
 } from 'recharts';
 import { useComparisonContext } from '../../context/ComparisonContext';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +15,8 @@ import { useEffect } from 'react';
 const Overviewpage = () => {
   const { comparisonData } = useComparisonContext();
   const navigate = useNavigate();
+
+  console.log(comparisonData);
 
   useEffect(() => {
     if (comparisonData.length === 0) {
@@ -45,6 +44,8 @@ const Overviewpage = () => {
     selects: selects,
   };
 
+  console.log(test);
+
   return (
     <motion.div
       animate={{ opacity: 1 }}
@@ -66,16 +67,40 @@ const Overviewpage = () => {
         <S.Charts>
           {Object.values(test).map((t, i) =>
             t.length !== 0 ? (
-              <ResponsiveContainer key={i} width="99%" minHeight={250}>
-                <BarChart data={t} margin={{ left: -22 }}>
-                  <XAxis dataKey="key" stroke="#fff" />
-                  <YAxis stroke="#fff" />
+              <ResponsiveContainer key={i} width="99%" minHeight={300}>
+                <BarChart data={t} margin={{ top: 20 }}>
+                  <XAxis
+                    dataKey="key"
+                    stroke="#fff"
+                    label={{
+                      value: 'operation',
+                      position: 'insideBottomRight',
+                    }}
+                  />
+                  <YAxis
+                    stroke="#fff"
+                    label={{
+                      value: 'ms',
+                      angle: -90,
+                      position: 'insideBottom',
+                    }}
+                  />
                   {databases.map((db) => (
                     <Bar
-                      dataKey={`data[0].${db.key}.time`}
-                      barSize={25}
+                      key={db.key}
+                      dataKey={`result.${db.key}.time`}
+                      barSize={100}
                       fill={db.color}
-                    />
+                    >
+                      <LabelList
+                        style={{
+                          fill: 'white',
+                        }}
+                        dataKey={`result.${db.key}.time`}
+                        formatter={(value: number) => `${value.toFixed(1)} ms`}
+                        position="top"
+                      />
+                    </Bar>
                   ))}
                 </BarChart>
               </ResponsiveContainer>

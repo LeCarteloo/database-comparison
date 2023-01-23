@@ -90,7 +90,6 @@ const Homepage = () => {
 
     switch (actions.select?.level) {
       case 0: {
-        // (prev) => {...prev, 'select': { }}
         setActions({
           ...actions,
           select: { ...actions.select, isFetching: true },
@@ -129,6 +128,24 @@ const Homepage = () => {
         setComparisonData(result);
 
         break;
+      }
+      case 2: {
+        setActions({
+          ...actions,
+          select: { ...actions.select, isFetching: true },
+        });
+
+        const response = await axios.get(
+          'http://localhost:3000/api/select/hard'
+        );
+
+        setActions({
+          ...actions,
+          select: { ...actions.select, isFetching: false, data: response.data },
+        });
+
+        const result = removeDuplicates(response.data);
+        setComparisonData(result);
       }
     }
 

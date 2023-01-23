@@ -22,7 +22,7 @@ interface DataList {
 
 interface ComparisonData {
   key: string;
-  data: DataList[];
+  result: DataList[];
 }
 
 export type { Databases, ComparisonData, IBlock };
