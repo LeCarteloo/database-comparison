@@ -211,7 +211,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = "Junior BackEnd";`,
+          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
         );
       });
 
@@ -232,7 +232,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = "Junior BackEnd";`,
+          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
         );
       });
 
@@ -253,7 +253,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = "Junior BackEnd";`,
+          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
         );
       });
 
