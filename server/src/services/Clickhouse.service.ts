@@ -1,11 +1,87 @@
 import { ClickhouseConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
 import fs from 'fs';
+import csvtojson from 'csvtojson';
 
 class ClickhouseService {
   private conn = ClickhouseConnection;
 
-  constructor() {}
+  constructor() { }
+
+  //* Insert data from CSV file
+  public async insertCSV() {
+    try {
+      await this.createTables();
+
+      const { memory, time } = await checkPerformance(async () => {
+        await this.conn.insert({
+          table: 'employees',
+          values: fs.createReadStream('./src/data/db_employees.csv'),
+          format: 'CSVWithNames',
+        });
+        await this.conn.insert({
+          table: 'titles',
+          values: fs.createReadStream('./src/data/db_titles.csv'),
+          format: 'CSVWithNames',
+        });
+        await this.conn.insert({
+          table: 'salary',
+          values: fs.createReadStream('./src/data/db_salary.csv'),
+          format: 'CSVWithNames',
+        });
+      });
+
+      return {
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  //* Inserts certain amount of rows into table
+  public async insert(amount: number): Promise<any | Error> {
+    try {
+      const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
+      let values: any[] = [];
+
+      for (let i = 0; i < amount; i++) {
+        if (!salary[i]) break;
+        values.push([
+          salary[i].employee_id,
+          salary[i].salary,
+          salary[i].from_date,
+          salary[i].to_date,
+        ]);
+      }
+
+      let valuesToAdd = values.map(
+        (val) =>
+          `{"employee_id": "${val[0]}", "salary": "${val[1]}", "from_date": "${val[2]}", "to_date": "${val[3]}"}`
+      ).join(',');
+
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.insert({
+          table: 'salary',
+          values: JSON.parse(`[${valuesToAdd}]`),
+          format: 'JSONEachRow'
+        });
+      });
+
+      return {
+        result: amount,
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
 
   //* Easy select: Returns salaries higher than 3000
   public async selectEasy() {
@@ -13,6 +89,28 @@ class ClickhouseService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
           query: 'SELECT * FROM salary s WHERE s.salary >= 3000',
+        });
+      });
+
+      return {
+        records: (await result.json()).data.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  //* Medium select: Returns all salaries
+  public async selectMedium() {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query:
+            "SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id",
         });
       });
 
@@ -52,90 +150,9 @@ class ClickhouseService {
       }
     }
   }
-  //* Medium select: Returns all salaries
-  public async selectMedium() {
-    try {
-      const { result, memory, time } = await checkPerformance(() => {
-        return this.conn.query({
-          query:
-            "SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id",
-        });
-      });
 
-      return {
-        records: (await result.json()).data.length,
-        memory,
-        time,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    }
-  }
 
-  //* Insert data from CSV file
-  public async insertCSV() {
-    try {
-      await this.createTables();
 
-      const { memory, time } = await checkPerformance(async () => {
-        await this.conn.insert({
-          table: 'employees',
-          values: fs.createReadStream('./src/data/db_employees.csv'),
-          format: 'CSVWithNames',
-        });
-        await this.conn.insert({
-          table: 'titles',
-          values: fs.createReadStream('./src/data/db_titles.csv'),
-          format: 'CSVWithNames',
-        });
-        await this.conn.insert({
-          table: 'salary',
-          values: fs.createReadStream('./src/data/db_salary.csv'),
-          format: 'CSVWithNames',
-        });
-      });
-
-      return {
-        memory,
-        time,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    }
-  }
-
-  //* Select data
-  public async insert(amount: number) {
-    try {
-      const { memory, time } = await checkPerformance(() => {
-        return this.conn.insert({
-          table: 'salary',
-          values: [
-            {
-              employee_id: 1,
-              salary: 333,
-              from_date: 'Test1',
-              to_date: 'TEST',
-            },
-          ],
-          format: 'JSONEachRow',
-        });
-      });
-
-      return {
-        memory: memory,
-        time: time,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    }
-  }
 
   //* Create tables
   private async createTables() {
