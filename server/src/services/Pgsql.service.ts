@@ -206,6 +206,69 @@ class PgsqlService {
     }
   }
 
+  //* Easy delete: delete all records where title = "Junior BackEnd"
+  public async deleteEasy(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `DELETE FROM titles WHERE title = "Junior BackEnd";`,
+        );
+      });
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Medium delete:
+  public async deleteMedium(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `DELETE FROM titles WHERE title = "Junior BackEnd";`,
+        );
+      });
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Hard delete:
+  public async deleteHard(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `DELETE FROM titles WHERE title = "Junior BackEnd";`,
+        );
+      });
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
   //* Create tables
   private async createTables(): Promise<any | Error> {
     try {

@@ -13,6 +13,9 @@ class ComparisonController {
   }
 
   private initRoutes(): void {
+    this.router.post(`${this.path}/delete/easy`, this.deleteEasy);
+    this.router.post(`${this.path}/delete/medium`, this.deleteMedium);
+    this.router.post(`${this.path}/delete/hard`, this.deleteHard);
     this.router.post(`${this.path}/update/easy`, this.updateEasy);
     this.router.post(`${this.path}/update/medium`, this.updateMedium);
     this.router.post(`${this.path}/update/hard`, this.updateHard);
@@ -206,16 +209,16 @@ class ComparisonController {
   ): Promise<Response | void> {
     try {
       // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.selectEasy();
+      // const mysqlResult = await mysqlService.updateEasy();
 
       const pgsql = new PgsqlService();
-      const pgsqlResult = await pgsql.selectEasy();
+      const pgsqlResult = await pgsql.updateEasy();
 
       // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.selectEasy();
+      // const clickhouseResult = await clickhouse.updateEasy();
 
       // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.selectEasy();
+      // const mongodbResult = await mongodb.updateEasy();
 
       res.status(200).json({
         // 'mysql-result': mysqlResult,
@@ -237,16 +240,16 @@ class ComparisonController {
   ): Promise<Response | void> {
     try {
       // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.selectEasy();
+      // const mysqlResult = await mysqlService.updateMedium();
 
       const pgsql = new PgsqlService();
-      const pgsqlResult = await pgsql.selectEasy();
+      const pgsqlResult = await pgsql.updateMedium();
 
       // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.selectEasy();
+      // const clickhouseResult = await clickhouse.updateMedium();
 
       // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.selectEasy();
+      // const mongodbResult = await mongodb.updateMedium();
 
       res.status(200).json({
         // 'mysql-result': mysqlResult,
@@ -268,16 +271,109 @@ class ComparisonController {
   ): Promise<Response | void> {
     try {
       // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.selectEasy();
+      // const mysqlResult = await mysqlService.updateHard();
 
       const pgsql = new PgsqlService();
-      const pgsqlResult = await pgsql.selectEasy();
+      const pgsqlResult = await pgsql.updateHard();
 
       // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.selectEasy();
+      // const clickhouseResult = await clickhouse.updateHard();
 
       // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.selectEasy();
+      // const mongodbResult = await mongodb.updateHard();
+
+      res.status(200).json({
+        // 'mysql-result': mysqlResult,
+        'pgsql-result': pgsqlResult,
+        // 'clickhouse-result': clickhouseResult,
+        // 'mongodb-result': mongodbResult,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  }
+
+  private async deleteEasy(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      // const mysqlService = new MysqlService();
+      // const mysqlResult = await mysqlService.deleteEasy();
+
+      const pgsql = new PgsqlService();
+      const pgsqlResult = await pgsql.deleteEasy();
+
+      // const clickhouse = new ClickhouseService();
+      // const clickhouseResult = await clickhouse.deleteEasy();
+
+      // const mongodb = new MongodbService();
+      // const mongodbResult = await mongodb.deleteEasy();
+
+      res.status(200).json({
+        // 'mysql-result': mysqlResult,
+        'pgsql-result': pgsqlResult,
+        // 'clickhouse-result': clickhouseResult,
+        // 'mongodb-result': mongodbResult,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  }
+
+  private async deleteMedium(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      // const mysqlService = new MysqlService();
+      // const mysqlResult = await mysqlService.deleteMedium();
+
+      const pgsql = new PgsqlService();
+      const pgsqlResult = await pgsql.deleteMedium();
+
+      // const clickhouse = new ClickhouseService();
+      // const clickhouseResult = await clickhouse.deleteMedium();
+
+      // const mongodb = new MongodbService();
+      // const mongodbResult = await mongodb.deleteMedium();
+
+      res.status(200).json({
+        // 'mysql-result': mysqlResult,
+        'pgsql-result': pgsqlResult,
+        // 'clickhouse-result': clickhouseResult,
+        // 'mongodb-result': mongodbResult,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  }
+
+  private async deleteHard(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      // const mysqlService = new MysqlService();
+      // const mysqlResult = await mysqlService.deleteHard();
+
+      const pgsql = new PgsqlService();
+      const pgsqlResult = await pgsql.deleteHard();
+
+      // const clickhouse = new ClickhouseService();
+      // const clickhouseResult = await clickhouse.deleteHard();
+
+      // const mongodb = new MongodbService();
+      // const mongodbResult = await mongodb.deleteHard();
 
       res.status(200).json({
         // 'mysql-result': mysqlResult,
