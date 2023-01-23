@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { useComparisonContext } from '../../context/ComparisonContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useStorageContext } from '../../context/StorageContext';
 
 interface Actions {
   select: {
@@ -50,7 +51,7 @@ const Homepage = () => {
   const [isFetching, setIsFetching] = useState(false);
   const navigate = useNavigate();
   const { comparisonData, setComparisonData } = useComparisonContext();
-
+  const { useStorage, setUseStorage } = useStorageContext();
   const sections: Sections[] = [
     {
       title: 'Insert',
@@ -269,7 +270,11 @@ const Homepage = () => {
                 Do you want to save comparison in local storage (it will be
                 saved even when page is refreshed)?
               </p>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={useStorage}
+                onChange={(e) => setUseStorage(e.target.checked)}
+              />
             </div>
             <p>
               If you want to know how this application works and what kind of
