@@ -122,10 +122,13 @@ class ComparisonController {
       const mongodbResult = await mongodb.selectEasy();
 
       res.status(200).json({
-        'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        'clickhouse-result': clickhouseResult,
-        'mongodb-result': mongodbResult,
+        key: 'select-easy',
+        result: {
+          mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          clickhouse: clickhouseResult,
+          mongodb: mongodbResult,
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -156,10 +159,13 @@ class ComparisonController {
       // const mongodbResult = await mongodb.selectMedium();
 
       res.status(200).json({
-        'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        'clickhouse-result': clickhouseResult,
-        'mongodb-result': 'WIP',
+        key: 'select-medium',
+        result: {
+          mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          clickhouse: clickhouseResult,
+          // mongodb: mongodbResult,
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -190,10 +196,13 @@ class ComparisonController {
       // const mongodbResult = await mongodb.selectHard();
 
       res.status(200).json({
-        'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        'clickhouse-result': clickhouseResult,
-        'mongodb-result': 'WIP',
+        key: 'select-hard',
+        result: {
+          mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          clickhouse: clickhouseResult,
+          // mongodb: 'WIP',
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
