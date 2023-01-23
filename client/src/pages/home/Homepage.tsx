@@ -1,23 +1,22 @@
 import { useState } from 'react';
 import { BlockGroup, CircleLoader, ComparisonProgress } from '../../components';
-import {
-  DeleteForever,
-  JoinInnerOutlined,
-  Edit,
-  TableRows,
-  FiberNew,
-} from '@mui/icons-material';
+import { DeleteForever, Edit, TableRows, FiberNew } from '@mui/icons-material';
 import * as S from './Homepage.styled';
 import { ComparisonData, IBlock } from '../../interfaces/interfaces';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useComparisonContext } from '../../context/ComparisonContext';
+import axios from 'axios';
 
 interface Actions {
-  insert: number | undefined;
-  select: number | undefined;
-  update: number | undefined;
-  delete: number | undefined;
+  select: {
+    level: number | undefined;
+    isFetching: boolean;
+    data?: ComparisonData;
+  };
+  // insert: number | undefined;
+  // update: number | undefined;
+  // delete: number | undefined;
 }
 
 interface Sections {
@@ -34,10 +33,13 @@ interface FetchingData {
 
 const Homepage = () => {
   const [actions, setActions] = useState<Actions>({
-    insert: undefined,
-    select: undefined,
-    delete: undefined,
-    update: undefined,
+    // insert: undefined,
+    select: {
+      level: undefined,
+      isFetching: false,
+    },
+    // delete: undefined,
+    // update: undefined,
   });
   const [data, setData] = useState<FetchingData>({
     isFetching: false,
@@ -45,196 +47,104 @@ const Homepage = () => {
   });
   const navigate = useNavigate();
   const { comparisonData, setComparisonData } = useComparisonContext();
+
   const sections: Sections[] = [
-    {
-      title: 'Insert',
-      action: 'insert',
-      blocks: [
-        {
-          icon: <FiberNew fontSize="large" />,
-          label: '1000 records',
-        },
-        {
-          icon: <FiberNew fontSize="large" />,
-          label: '5000 records',
-        },
-        {
-          icon: <FiberNew fontSize="large" />,
-          label: '10000 records',
-        },
-        {
-          icon: <FiberNew fontSize="large" />,
-          label: '50000 records',
-        },
-      ],
-    },
     {
       title: 'Select',
       action: 'select',
       blocks: [
         {
           icon: <TableRows fontSize="large" />,
-          label: '1000 records',
+          label: 'Easy select',
         },
         {
           icon: <TableRows fontSize="large" />,
-          label: '5000 records',
+          label: 'Medium select',
         },
         {
           icon: <TableRows fontSize="large" />,
-          label: '10000 records',
-        },
-        {
-          icon: <TableRows fontSize="large" />,
-          label: '50000 records',
-        },
-      ],
-    },
-    {
-      title: 'Update',
-      action: 'update',
-      blocks: [
-        {
-          icon: <Edit fontSize="large" />,
-          label: '1000 records',
-        },
-        {
-          icon: <Edit fontSize="large" />,
-          label: '5000 records',
-        },
-        {
-          icon: <Edit fontSize="large" />,
-          label: '10000 records',
-        },
-        {
-          icon: <Edit fontSize="large" />,
-          label: '50000 records',
-        },
-      ],
-    },
-    {
-      title: 'Delete',
-      action: 'delete',
-      blocks: [
-        {
-          icon: <DeleteForever fontSize="large" />,
-          label: '1000 records',
-        },
-        {
-          icon: <DeleteForever fontSize="large" />,
-          label: '5000 records',
-        },
-        {
-          icon: <DeleteForever fontSize="large" />,
-          label: '10000 records',
-        },
-        {
-          icon: <DeleteForever fontSize="large" />,
-          label: '50000 records',
+          label: 'Hard select',
         },
       ],
     },
   ];
 
-  const handleComparison = () => {
-    setData((prev) => ({ ...prev, isFetching: true }));
-
-    // Timeouts simulating API wait time
-    setTimeout(() => {
-      const testResponse: ComparisonData[] = [
-        {
-          key: 'insert-1000',
-          data: [
-            {
-              mysql: {
-                time: 83,
-                memory: 1000,
-                query: 'SELECT * FROM test',
-              },
-              pgsql: {
-                time: 103,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-              mongodb: {
-                time: 23,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-              clickhouse: {
-                time: 53,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-            },
-          ],
-        },
-        {
-          key: 'insert-5000',
-          data: [
-            {
-              mysql: {
-                time: 83,
-                memory: 1000,
-                query: 'SELECT * FROM test',
-              },
-              pgsql: {
-                time: 103,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-              mongodb: {
-                time: 23,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-              clickhouse: {
-                time: 53,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-            },
-          ],
-        },
-        {
-          key: 'delete-5000',
-          data: [
-            {
-              mysql: {
-                time: 83,
-                memory: 1000,
-                query: 'SELECT * FROM test',
-              },
-              pgsql: {
-                time: 103,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-              mongodb: {
-                time: 23,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-              clickhouse: {
-                time: 53,
-                memory: 300,
-                query: 'SELECT * FROM test',
-              },
-            },
-          ],
-        },
-      ];
-
-      const data = [...comparisonData, ...testResponse].filter(
-        (element, index, self) =>
-          index === self.findIndex((elem) => elem.key === element.key)
+  const handleComparison = async () => {
+    const removeDuplicates = (response: ComparisonData) => {
+      const index = comparisonData.findIndex(
+        (item) => item.key === response.key
       );
 
-      setData((prev) => ({ ...prev, isFetching: false }));
-      setComparisonData(data);
-      navigate('/overview');
-    }, 3000);
+      const data = [...comparisonData];
+
+      if (index !== -1) {
+        data.splice(index, 1, response);
+      } else {
+        data.push(response);
+      }
+
+      return data;
+    };
+
+    setData({ ...data, isFetching: true });
+
+    switch (actions.select?.level) {
+      case 0: {
+        // (prev) => {...prev, 'select': { }}
+        setActions({
+          ...actions,
+          select: { ...actions.select, isFetching: true },
+        });
+
+        const response = await axios.get(
+          'http://localhost:3000/api/select/easy'
+        );
+
+        setActions({
+          ...actions,
+          select: { ...actions.select, isFetching: false, data: response.data },
+        });
+
+        const result = removeDuplicates(response.data);
+        setComparisonData(result);
+
+        break;
+      }
+      case 1: {
+        setActions({
+          ...actions,
+          select: { ...actions.select, isFetching: true },
+        });
+
+        const response = await axios.get(
+          'http://localhost:3000/api/select/medium'
+        );
+
+        setActions({
+          ...actions,
+          select: { ...actions.select, isFetching: false, data: response.data },
+        });
+
+        const result = removeDuplicates(response.data);
+        setComparisonData(result);
+
+        break;
+      }
+    }
+
+    setData({ ...data, isFetching: false });
+
+    navigate('/overview');
   };
+
+  const loaderItems: any = [];
+  Object.keys(actions).forEach((key) => {
+    if (actions[key as keyof typeof actions].level !== undefined)
+      loaderItems.push({
+        name: key,
+        isLoading: 'siema',
+      });
+  });
 
   return (
     <motion.div
@@ -281,11 +191,16 @@ const Homepage = () => {
                   <hr style={{ marginBottom: '0.8em', width: '40%' }} />
                   <S.BlockList>
                     <BlockGroup
-                      active={actions[section.action as keyof typeof actions]}
+                      active={
+                        actions[section.action as keyof typeof actions]?.level
+                      }
                       setActive={(action) =>
                         setActions({
                           ...actions,
-                          [section.action as keyof typeof actions]: action,
+                          [section.action as keyof typeof actions]: {
+                            isFetching: false,
+                            level: action,
+                          },
                         })
                       }
                       blocks={section.blocks}
@@ -296,7 +211,7 @@ const Homepage = () => {
             </S.SectionList>
           </S.ContentBlock>
         </div>
-        {data.isFetching ? <ComparisonProgress items={['test']} /> : null}
+        {data.isFetching ? <ComparisonProgress items={loaderItems} /> : null}
       </S.MainContainer>
     </motion.div>
   );

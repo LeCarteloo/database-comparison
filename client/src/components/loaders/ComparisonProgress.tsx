@@ -2,13 +2,16 @@ import CircleLoader from './CircleLoader';
 import * as S from './Loaders.styled';
 
 interface ComparisonProgressProps {
-  items: string[];
+  items: {
+    name: string;
+    isLoading: boolean;
+  }[];
 }
 
 const ComparisonProgress = ({ items }: ComparisonProgressProps) => {
   return (
     <S.LoadingList>
-      {items.map((db, i) => (
+      {items.map((item, i) => (
         <S.LoadingItem
           key={i}
           animate={{ x: 0 }}
@@ -16,9 +19,9 @@ const ComparisonProgress = ({ items }: ComparisonProgressProps) => {
           transition={{ duration: 0.4 + i * 0.1, ease: 'easeInOut' }}
         >
           <div>
-            <CircleLoader isLoading={true} />
+            <CircleLoader isLoading={item.isLoading} />
           </div>
-          <span>{db}</span>
+          <span>{item.name}</span>
         </S.LoadingItem>
       ))}
     </S.LoadingList>
