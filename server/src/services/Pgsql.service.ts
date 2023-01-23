@@ -143,6 +143,69 @@ class PgsqlService {
     }
   }
 
+  //* Easy update: update salaries to 2500 benith 2000
+  public async updateEasy(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `UPDATE salary SET salary = 2500 WHERE salary < 2000`,
+        );
+      });
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Medium update:
+  public async updateMedium(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `UPDATE salary SET salary = 2500 WHERE salary < 2000`,
+        );
+      });
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Hard update:
+  public async updateHard(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query(
+          `UPDATE salary SET salary = 2500 WHERE salary < 2000`,
+        );
+      });
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
   //* Create tables
   private async createTables(): Promise<any | Error> {
     try {
