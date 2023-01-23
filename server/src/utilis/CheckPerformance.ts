@@ -12,7 +12,8 @@ const checkPerformance = async (
   const result = await callback();
   const end = performance.now();
 
-  const formatMemoryUsage = (data: any) => Math.round(data / 1024 / 1024 * 100) / 100;
+  const formatMemoryUsage = (data: any) =>
+    Math.round((data / 1024 / 1024) * 100) / 100;
 
   return {
     result: result,
