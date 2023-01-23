@@ -44,8 +44,6 @@ const Overviewpage = () => {
     selects: selects,
   };
 
-  console.log(test);
-
   return (
     <motion.div
       animate={{ opacity: 1 }}
@@ -97,7 +95,7 @@ const Overviewpage = () => {
                           fill: 'white',
                         }}
                         dataKey={`result.${db.key}.time`}
-                        formatter={(value: number) => `${value.toFixed(1)} ms`}
+                        formatter={(value: number) => `${value.toFixed(2)}`}
                         position="top"
                       />
                     </Bar>

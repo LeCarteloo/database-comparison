@@ -1,4 +1,4 @@
-import { Dashboard, Insights, Leaderboard } from '@mui/icons-material';
+import { Article, Dashboard, Insights, Leaderboard } from '@mui/icons-material';
 import * as S from './Sidebar.styled';
 import { useEffect, useState } from 'react';
 import { useComparisonContext } from '../../context/ComparisonContext';
@@ -26,6 +26,12 @@ const Sidebar = () => {
       path: '/insights',
       label: 'Insights',
       disabled: comparisonData.length === 0,
+    },
+    {
+      icon: <Article />,
+      path: '/docs',
+      label: 'Docs',
+      disabled: false,
     },
   ];
 

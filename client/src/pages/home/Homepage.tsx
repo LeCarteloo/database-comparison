@@ -1,20 +1,29 @@
 import { useState } from 'react';
-import { BlockGroup, CircleLoader, ComparisonProgress } from '../../components';
-import { DeleteForever, Edit, TableRows, FiberNew } from '@mui/icons-material';
+import { BlockGroup, ComparisonProgress } from '../../components';
+import {
+  DeleteForever,
+  Edit,
+  TableRows,
+  FiberNew,
+  Preview,
+} from '@mui/icons-material';
 import * as S from './Homepage.styled';
 import { ComparisonData, IBlock } from '../../interfaces/interfaces';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useComparisonContext } from '../../context/ComparisonContext';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 interface Actions {
   select: {
     level: number | undefined;
-    isFetching: boolean;
-    data?: ComparisonData;
+    isFinished: boolean;
   };
-  // insert: number | undefined;
+  insert: {
+    level: number | undefined;
+    isFinished: boolean;
+  };
   // update: number | undefined;
   // delete: number | undefined;
 }
@@ -25,30 +34,42 @@ interface Sections {
   blocks: IBlock[];
 }
 
-// Test interface
-interface FetchingData {
-  isFetching: boolean;
-  data: any;
-}
-
 const Homepage = () => {
   const [actions, setActions] = useState<Actions>({
-    // insert: undefined,
+    insert: {
+      level: undefined,
+      isFinished: false,
+    },
     select: {
       level: undefined,
-      isFetching: false,
+      isFinished: false,
     },
     // delete: undefined,
     // update: undefined,
   });
-  const [data, setData] = useState<FetchingData>({
-    isFetching: false,
-    data: [],
-  });
+  const [isFetching, setIsFetching] = useState(false);
   const navigate = useNavigate();
   const { comparisonData, setComparisonData } = useComparisonContext();
 
   const sections: Sections[] = [
+    {
+      title: 'Insert',
+      action: 'insert',
+      blocks: [
+        {
+          icon: <FiberNew fontSize="large" />,
+          label: '50000 records',
+        },
+        {
+          icon: <FiberNew fontSize="large" />,
+          label: '100000 records',
+        },
+        {
+          icon: <FiberNew fontSize="large" />,
+          label: '2500000 records',
+        },
+      ],
+    },
     {
       title: 'Select',
       action: 'select',
@@ -70,12 +91,15 @@ const Homepage = () => {
   ];
 
   const handleComparison = async () => {
-    const removeDuplicates = (response: ComparisonData) => {
+    const removeDuplicates = (
+      prev: ComparisonData[],
+      response: ComparisonData
+    ): ComparisonData[] => {
       const index = comparisonData.findIndex(
         (item) => item.key === response.key
       );
 
-      const data = [...comparisonData];
+      const data = [...prev];
 
       if (index !== -1) {
         data.splice(index, 1, response);
@@ -86,80 +110,135 @@ const Homepage = () => {
       return data;
     };
 
-    setData({ ...data, isFetching: true });
+    setIsFetching(true);
 
+    // @ts-ignore
     switch (actions.select?.level) {
       case 0: {
-        setActions({
-          ...actions,
-          select: { ...actions.select, isFetching: true },
-        });
-
         const response = await axios.get(
           'http://localhost:3000/api/select/easy'
         );
 
-        setActions({
-          ...actions,
-          select: { ...actions.select, isFetching: false, data: response.data },
-        });
+        setActions((prev: Actions) => ({
+          ...prev,
+          select: { ...actions.select, isFinished: true },
+        }));
 
-        const result = removeDuplicates(response.data);
-        setComparisonData(result);
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, response.data);
+        });
 
         break;
       }
       case 1: {
-        setActions({
-          ...actions,
-          select: { ...actions.select, isFetching: true },
-        });
-
         const response = await axios.get(
           'http://localhost:3000/api/select/medium'
         );
 
-        setActions({
-          ...actions,
-          select: { ...actions.select, isFetching: false, data: response.data },
-        });
+        setActions((prev: Actions) => ({
+          ...prev,
+          select: { ...actions.select, isFinished: true },
+        }));
 
-        const result = removeDuplicates(response.data);
-        setComparisonData(result);
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, response.data);
+        });
 
         break;
       }
       case 2: {
-        setActions({
-          ...actions,
-          select: { ...actions.select, isFetching: true },
-        });
-
         const response = await axios.get(
           'http://localhost:3000/api/select/hard'
         );
 
-        setActions({
-          ...actions,
-          select: { ...actions.select, isFetching: false, data: response.data },
-        });
+        setActions((prev: Actions) => ({
+          ...prev,
+          select: { ...actions.select, isFinished: true },
+        }));
 
-        const result = removeDuplicates(response.data);
-        setComparisonData(result);
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, response.data);
+        });
       }
     }
 
-    setData({ ...data, isFetching: false });
+    switch (actions.insert?.level) {
+      case 0: {
+        const response = await axios.post(
+          'http://localhost:3000/api/insert/50000'
+        );
 
+        setActions((prev: Actions) => ({
+          ...prev,
+          insert: { ...actions.insert, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, {
+            ...response.data,
+            key: 'insert-easy',
+          });
+        });
+
+        break;
+      }
+      case 1: {
+        const response = await axios.post(
+          'http://localhost:3000/api/insert/100000'
+        );
+
+        setActions((prev: Actions) => ({
+          ...prev,
+          insert: { ...actions.insert, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, {
+            ...response.data,
+            key: 'insert-medium',
+          });
+        });
+
+        break;
+      }
+      case 2: {
+        const response = await axios.post(
+          'http://localhost:3000/api/insert/250000'
+        );
+
+        setActions((prev: Actions) => ({
+          ...prev,
+          insert: { ...actions.insert, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, {
+            ...response.data,
+            key: 'insert-hard',
+          });
+        });
+
+        break;
+      }
+    }
+
+    setIsFetching(false);
     navigate('/overview');
   };
 
   const loaderItems: any = [];
   Object.keys(actions).forEach((key) => {
-    if (actions[key as keyof typeof actions].level !== undefined)
+    const keyWithType = key as keyof typeof actions;
+    if (actions[keyWithType].level !== undefined)
       loaderItems.push({
         name: key,
-        isLoading: 'siema',
+        isLoading: !actions[keyWithType].isFinished,
       });
   });
 
@@ -175,7 +254,7 @@ const Homepage = () => {
           onClick={handleComparison}
           disabled={
             Object.values(actions).filter((action) => action !== undefined)
-              .length === 0 || data.isFetching
+              .length === 0 || isFetching
           }
         >
           Start comparison
@@ -184,15 +263,22 @@ const Homepage = () => {
       <S.MainContainer>
         <div style={{ width: '100%' }}>
           <S.ContentBlock style={{ marginBottom: '1em' }}>
-            <span>Config</span>
-            <p>Do you want to save comparison in app memory?</p>
-            <input type="checkbox" />
+            <h2>Config</h2>
+            <div style={{ display: 'flex', gap: '1em' }}>
+              <p>
+                Do you want to save comparison in local storage (it will be
+                saved even when page is refreshed)?
+              </p>
+              <input type="checkbox" />
+            </div>
             <p>
-              Do you want to save comparison in local storage (it will be saved
-              even when page is refreshed)?
+              If you want to know how this application works and what kind of
+              queries it is using - head to{' '}
+              <Link to="/docs" style={{ color: 'white' }}>
+                documentation
+              </Link>
+              .
             </p>
-            <input type="checkbox" />
-            <p>Want to know, how this app works? Go to the documentation.</p>
           </S.ContentBlock>
           <S.ContentBlock>
             <span style={{ color: '#d4d4d4' }}>
@@ -228,7 +314,7 @@ const Homepage = () => {
             </S.SectionList>
           </S.ContentBlock>
         </div>
-        {data.isFetching ? <ComparisonProgress items={loaderItems} /> : null}
+        {isFetching ? <ComparisonProgress items={loaderItems} /> : null}
       </S.MainContainer>
     </motion.div>
   );
