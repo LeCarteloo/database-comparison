@@ -91,6 +91,10 @@ const Homepage = () => {
     },
   ];
 
+  const handleClearStorage = async () => {
+    localStorage.removeItem('comparison');
+  };
+
   const handleComparison = async () => {
     const removeDuplicates = (
       prev: ComparisonData[],
@@ -254,8 +258,9 @@ const Homepage = () => {
         <S.Button
           onClick={handleComparison}
           disabled={
-            Object.values(actions).filter((action) => action !== undefined)
-              .length === 0 || isFetching
+            Object.values(actions).filter(
+              (action) => action.level !== undefined
+            ).length === 0 || isFetching
           }
         >
           Start comparison
@@ -265,17 +270,16 @@ const Homepage = () => {
         <div style={{ width: '100%' }}>
           <S.ContentBlock style={{ marginBottom: '1em' }}>
             <h2>Config</h2>
-            <div style={{ display: 'flex', gap: '1em' }}>
-              <p>
-                Do you want to save comparison in local storage (it will be
-                saved even when page is refreshed)?
-              </p>
-              <input
-                type="checkbox"
-                checked={useStorage}
-                onChange={(e) => setUseStorage(e.target.checked)}
-              />
-            </div>
+            <p>
+              Do you want to save comparison in local storage (it will be saved
+              even when page is refreshed)?
+            </p>
+            <input
+              type="checkbox"
+              checked={useStorage}
+              onChange={(e) => setUseStorage(e.target.checked)}
+            />
+            <button onClick={handleClearStorage}>Clear storage</button>
             <p>
               If you want to know how this application works and what kind of
               queries it is using - head to{' '}

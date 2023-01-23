@@ -2,7 +2,7 @@ import { Sidebar } from '../../components';
 import * as S from './Main.styled';
 import { Routes, Route } from 'react-router-dom';
 import { Homepage, Insightspage, Overviewpage } from '../../pages';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ComparisonData } from '../../interfaces/interfaces';
 import { ComparisonProvider } from '../../context/ComparisonContext';
 import { StorageProvider } from '../../context/StorageContext';
@@ -11,17 +11,30 @@ const Main = () => {
   const [comparisonData, setComparisonData] = useState<ComparisonData[]>([]);
   const [useStorage, setUseStorage] = useState(false);
 
+  useEffect(() => {
+    const comparison = localStorage.getItem('comparison');
+
+    if (comparison) {
+      setComparisonData(JSON.parse(comparison));
+      setUseStorage(true);
+    }
+  }, []);
+
+  if (useStorage) {
+    localStorage.setItem('comparison', JSON.stringify(comparisonData));
+  }
+
   return (
     <ComparisonProvider
       comparisonData={comparisonData}
       setComparisonData={(data) => setComparisonData(data)}
     >
-      <S.HomeGrid>
-        <Sidebar />
-        <StorageProvider
-          useStorage={useStorage}
-          setUseStorage={(state) => setUseStorage(state)}
-        >
+      <StorageProvider
+        useStorage={useStorage}
+        setUseStorage={(state) => setUseStorage(state)}
+      >
+        <S.HomeGrid>
+          <Sidebar />
           <S.Main>
             <Routes>
               <Route path="/" element={<Homepage />} />
@@ -29,8 +42,8 @@ const Main = () => {
               <Route path="/insights" element={<Insightspage />} />
             </Routes>
           </S.Main>
-        </StorageProvider>
-      </S.HomeGrid>
+        </S.HomeGrid>
+      </StorageProvider>
     </ComparisonProvider>
   );
 };
