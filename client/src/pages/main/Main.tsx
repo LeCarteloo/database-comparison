@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { ComparisonData } from '../../interfaces/interfaces';
 import { ComparisonProvider } from '../../context/ComparisonContext';
 import { StorageProvider } from '../../context/StorageContext';
+import DocsPage from '../docs/DocsPage';
 
 const Main = () => {
   const [comparisonData, setComparisonData] = useState<ComparisonData[]>([]);
@@ -40,6 +41,7 @@ const Main = () => {
               <Route path="/" element={<Homepage />} />
               <Route path="/overview" element={<Overviewpage />} />
               <Route path="/insights" element={<Insightspage />} />
+              <Route path="/docs" element={<DocsPage />} />
             </Routes>
           </S.Main>
         </S.HomeGrid>
