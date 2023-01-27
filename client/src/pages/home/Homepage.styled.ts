@@ -56,6 +56,28 @@ const Button = styled.button`
   }
 `;
 
+const SmallButton = styled.button`
+  background-color: #524eee;
+  padding: 0.3em;
+  border: none;
+  color: #fff;
+  font-size: 0.95em;
+  border-radius: 1vh;
+  cursor: pointer;
+  transition: 0.1s ease-in-out;
+  &:hover:enabled,
+  &:focus-within:enabled {
+    transform: scale(1.05);
+  }
+  &:active {
+    opacity: 0.6;
+  }
+  &:disabled {
+    cursor: initial;
+    opacity: 0.3;
+  }
+`;
+
 const MainContainer = styled.div`
   display: flex;
   gap: 3%;
@@ -64,4 +86,12 @@ const MainContainer = styled.div`
   }
 `;
 
-export { ContentBlock, BlockList, Header, Button, SectionList, MainContainer };
+export {
+  ContentBlock,
+  BlockList,
+  SmallButton,
+  Header,
+  Button,
+  SectionList,
+  MainContainer,
+};

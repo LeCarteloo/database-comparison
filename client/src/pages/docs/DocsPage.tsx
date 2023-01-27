@@ -116,7 +116,7 @@ const DocsPage = () => {
           <div>Table of Contents</div>
           <S.ContentList>
             {sections.map((section) => (
-              <li style={{ padding: '0.1em 0' }}>
+              <li key={section.id} style={{ padding: '0.1em 0' }}>
                 <S.ContentLink href={`#${section.id}`}>
                   {section.title}
                 </S.ContentLink>
@@ -125,21 +125,21 @@ const DocsPage = () => {
           </S.ContentList>
         </div>
         {sections.map((section) => (
-          <section id={section.id}>
+          <section key={section.id} id={section.id}>
             <h2 style={{ marginTop: '0.5em' }}>{section.title}</h2>
             <p>{section.desc}</p>
             {section.subSections.map((subSection) => (
-              <div>
+              <div key={subSection.subTitle}>
                 <h3 style={{ marginTop: '0.7em' }}>
                   Level: {subSection.subTitle}
                 </h3>
                 {subSection.queries.map((query) => (
-                  <>
+                  <div key={query.name}>
                     <h4 style={{ marginTop: '0.6em' }}>- {query.name}</h4>
                     <pre>
                       <code className="language-js">{query.query}</code>
                     </pre>
-                  </>
+                  </div>
                 ))}
               </div>
             ))}

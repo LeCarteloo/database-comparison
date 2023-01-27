@@ -29,6 +29,11 @@ interface Actions {
   // delete: number | undefined;
 }
 
+interface LoaderItems {
+  name: string;
+  isLoading: boolean;
+}
+
 interface Sections {
   title: string;
   action: string;
@@ -91,6 +96,10 @@ const Homepage = () => {
     },
   ];
 
+  const handleClearContext = async () => {
+    setComparisonData([]);
+  };
+
   const handleClearStorage = async () => {
     localStorage.removeItem('comparison');
   };
@@ -117,7 +126,6 @@ const Homepage = () => {
 
     setIsFetching(true);
 
-    // @ts-ignore
     switch (actions.select?.level) {
       case 0: {
         const response = await axios.get(
@@ -237,7 +245,7 @@ const Homepage = () => {
     navigate('/overview');
   };
 
-  const loaderItems: any = [];
+  const loaderItems: LoaderItems[] = [];
   Object.keys(actions).forEach((key) => {
     const keyWithType = key as keyof typeof actions;
     if (actions[keyWithType].level !== undefined)
@@ -274,12 +282,45 @@ const Homepage = () => {
               Do you want to save comparison in local storage (it will be saved
               even when page is refreshed)?
             </p>
-            <input
-              type="checkbox"
-              checked={useStorage}
-              onChange={(e) => setUseStorage(e.target.checked)}
-            />
-            <button onClick={handleClearStorage}>Clear storage</button>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5em',
+                marginTop: '0.5em',
+              }}
+            >
+              <span> Use local storage?</span>
+              <input
+                type="checkbox"
+                checked={useStorage}
+                onChange={(e) => setUseStorage(e.target.checked)}
+                style={{ width: '25px', height: '25px', cursor: 'pointer' }}
+              />
+            </div>
+
+            <h2>Data</h2>
+            <p>
+              If you want to clear local storage click{' '}
+              <strong>clear storage</strong> button. If you want to clear data
+              from app memory click <strong>clear context</strong> button.
+              (Buttons are disabled if data is empty)
+            </p>
+            <div style={{ display: 'flex', gap: '1em', marginTop: '0.5em' }}>
+              <S.SmallButton
+                onClick={handleClearStorage}
+                disabled={localStorage.getItem('comparison') === '[]'}
+              >
+                Clear storage
+              </S.SmallButton>
+              <S.SmallButton
+                onClick={handleClearContext}
+                disabled={comparisonData.length === 0}
+              >
+                Clear context
+              </S.SmallButton>
+            </div>
+            <hr style={{ margin: '0.8em 0' }} />
             <p>
               If you want to know how this application works and what kind of
               queries it is using - head to{' '}
