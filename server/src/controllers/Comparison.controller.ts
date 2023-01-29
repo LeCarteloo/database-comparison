@@ -220,8 +220,8 @@ class ComparisonController {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.updateEasy();
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.updateEasy();
 
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.updateEasy();
@@ -235,7 +235,7 @@ class ComparisonController {
       res.status(200).json({
         key: 'Easy update',
         result: {
-          // mysql: mysqlResult,
+          mysql: mysqlResult,
           pgsql: pgsqlResult,
           // clickhouse: clickhouseResult,
           // mongodb: 'WIP',
@@ -254,8 +254,8 @@ class ComparisonController {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.updateMedium();
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.updateMedium();
 
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.updateMedium();
@@ -269,7 +269,7 @@ class ComparisonController {
       res.status(200).json({
         key: 'Medium update',
         result: {
-          // mysql: mysqlResult,
+          mysql: mysqlResult,
           pgsql: pgsqlResult,
           // clickhouse: clickhouseResult,
           // mongodb: 'WIP',
@@ -288,8 +288,8 @@ class ComparisonController {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.updateHard();
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.updateHard();
 
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.updateHard();
@@ -303,7 +303,7 @@ class ComparisonController {
       res.status(200).json({
         key: 'Hard update',
         result: {
-          // mysql: mysqlResult,
+          mysql: mysqlResult,
           pgsql: pgsqlResult,
           // clickhouse: clickhouseResult,
           // mongodb: 'WIP',
@@ -322,8 +322,8 @@ class ComparisonController {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.deleteEasy();
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.deleteEasy();
 
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.deleteEasy();
@@ -337,7 +337,7 @@ class ComparisonController {
       res.status(200).json({
         key: 'Easy delete',
         result: {
-          // mysql: mysqlResult,
+          mysql: mysqlResult,
           pgsql: pgsqlResult,
           // clickhouse: clickhouseResult,
           // mongodb: 'WIP',
@@ -356,8 +356,8 @@ class ComparisonController {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.deleteMedium();
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.deleteMedium();
 
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.deleteMedium();
@@ -371,7 +371,7 @@ class ComparisonController {
       res.status(200).json({
         key: 'Medium delete',
         result: {
-          // mysql: mysqlResult,
+          mysql: mysqlResult,
           pgsql: pgsqlResult,
           // clickhouse: clickhouseResult,
           // mongodb: 'WIP',
@@ -390,8 +390,8 @@ class ComparisonController {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      // const mysqlService = new MysqlService();
-      // const mysqlResult = await mysqlService.deleteHard();
+      const mysqlService = new MysqlService();
+      const mysqlResult = await mysqlService.deleteHard();
 
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.deleteHard();
@@ -405,7 +405,7 @@ class ComparisonController {
       res.status(200).json({
         key: 'Hard delete',
         result: {
-          // mysql: mysqlResult,
+          mysql: mysqlResult,
           pgsql: pgsqlResult,
           // clickhouse: clickhouseResult,
           // mongodb: 'WIP',
