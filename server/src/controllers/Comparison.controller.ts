@@ -291,8 +291,8 @@ class ComparisonController {
       const mysqlService = new MysqlService();
       const mysqlResult = await mysqlService.updateHard();
 
-      const pgsql = new PgsqlService();
-      const pgsqlResult = await pgsql.updateHard();
+      // const pgsql = new PgsqlService();
+      // const pgsqlResult = await pgsql.updateHard();
 
       // const clickhouse = new ClickhouseService();
       // const clickhouseResult = await clickhouse.updateHard();
@@ -304,7 +304,7 @@ class ComparisonController {
         key: 'Hard update',
         result: {
           mysql: mysqlResult,
-          pgsql: pgsqlResult,
+          // pgsql: pgsqlResult,
           // clickhouse: clickhouseResult,
           // mongodb: 'WIP',
         },

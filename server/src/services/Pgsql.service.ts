@@ -163,6 +163,7 @@ class PgsqlService {
       await this.insertCSV();
 
       return {
+        records: result.rowCount,
         memory: memory,
         time: time,
       };
@@ -179,17 +180,20 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `UPDATE employees AS e
-          INNER JOIN salaries AS s
-            ON s.employee_id = e.id
-        SET s.salary = 4500
-        WHERE e.gender = 'M' AND s.salary < 3000 AND e.hire_date > '2000-01-01'`,
+          `UPDATE salary AS s
+          SET salary = 4500
+        FROM employees AS e
+        WHERE s.employee_id = e.id
+          AND e.gender = 'M' 
+          AND s.salary < 3000 
+          AND e.hire_date > '2000-01-01'`,
         );
       });
 
       await this.insertCSV();
 
       return {
+        records: result.rowCount,
         memory: memory,
         time: time,
       };
@@ -206,13 +210,17 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `UPDATE employees AS e
-          INNER JOIN titles AS t
-            ON t.employee_id = e.id
-          INNER JOIN salaries AS s
-            ON s.employee_id = e.id
-        SET s.salary = 6331, t.to_date = CURDATE(), t.title = 'Old worker'
-        WHERE s.salary < 5001 AND e.hire_date < '1995-01-01' AND t.to_date > '2011-11-01'`,
+          `UPDATE salary AS s
+          SET salary = 6331, 
+          FROM employees AS e
+            INNER JOIN titles AS t
+              ON t.employee_id = e.id
+        WHERE s.employee_id = e.id
+          AND s.salary < 5001 
+          AND e.hire_date < '1995-01-01' 
+          AND t.to_date > '2011-11-01'
+          SET t.to_date = CURRENT_DATE, 
+          t.title = 'Old worker'`,
         );
       });
 
