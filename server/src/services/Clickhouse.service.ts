@@ -71,6 +71,8 @@ class ClickhouseService {
         });
       });
 
+      await this.insertCSV();
+
       return {
         result: amount,
         memory: memory,
@@ -131,11 +133,18 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query: `SELECT e.id, e.first_name, e.last_name, e.gender, e.hire_date, s.how_many_withdrawals, s.smallest_payout, s.biggest_payout, t.how_many_titles, t.last_promotion
-            FROM employees AS e,
-            (SELECT count(salary) as how_many_withdrawals, max(salary) as biggest_payout, min(salary) as smallest_payout, employee_id FROM salary GROUP BY employee_id) AS s,
-            (SELECT count(title) as how_many_titles, employee_id, MAX(from_date) as last_promotion FROM titles GROUP BY employee_id) AS t
-            WHERE e.id = s.employee_id AND e.id = t.employee_id`,
+          query: `
+          SELECT 
+          e.id, e.first_name, e.last_name, e.gender, e.hire_date, 
+          s.how_many_withdrawals,s.smallest_payout, s.biggest_payout, s.sum_salary, 
+          t.how_many_titles, t.last_promotion
+          FROM 
+          employees e,
+          (SELECT count(salary) as how_many_withdrawals, min(salary) as smallest_payout, max(salary) as biggest_payout, sum(salary) as sum_salary, employee_id FROM salary GROUP BY employee_id) AS s,
+          (SELECT count(title) as how_many_titles, employee_id, MAX(from_date) as last_promotion FROM titles GROUP BY employee_id) AS t
+          WHERE e.id = s.employee_id AND e.id = t.employee_id AND e.gender = 'F' AND e.hire_date < '2015-01-01' AND 
+          s.sum_salary > 100000
+          ORDER BY s.sum_salary desc`,
         });
       });
 
@@ -151,12 +160,159 @@ class ClickhouseService {
     }
   }
 
+  //* Easy update: update salaries to 2500 benith 2000
+  public async updateEasy() {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query: `ALTER TABLE salary UPDATE salary = 2500 WHERE salary < 2000`,
+        });
+      });
+
+      await this.insertCSV();
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Medium update:
+  public async updateMedium(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query:
+            ``,
+        });
+      });
+
+      await this.insertCSV();
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Hard update:
+  public async updateHard(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query:
+            ``,
+        });
+      });
+
+      await this.insertCSV();
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Easy delete: delete all records where title = "Junior BackEnd"
+  public async deleteEasy(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query:
+            ``,
+        });
+      });
+
+      await this.insertCSV();
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Medium delete:
+  public async deleteMedium(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query:
+            ``,
+        });
+      });
+
+      await this.insertCSV();
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Hard delete:
+  public async deleteHard(): Promise<any | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(() => {
+        return this.conn.query({
+          query:
+            ``,
+        });
+      });
+
+      await this.insertCSV();
+
+      return {
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
 
 
 
   //* Create tables
   private async createTables() {
     try {
+      await this.conn.exec({ query: `DROP TABLE IF EXISTS employees` });
+      await this.conn.exec({ query: `DROP TABLE IF EXISTS salary` });
+      await this.conn.exec({ query: `DROP TABLE IF EXISTS titles` });
+
       await this.conn.exec({
         query: `
               CREATE TABLE IF NOT EXISTS employees(
