@@ -126,13 +126,13 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `SELECT id, first_name, last_name, gender, hire_date, s.how_many_withdrawals, s.smallest_payout, s.biggest_payout, s.sum_salary, t.how_many_titles, t.last_promotion, DATEDIFF(CURDATE(), hire_date) as days_work
+          `SELECT id, first_name, last_name, gender, hire_date, s.how_many_withdrawals, s.smallest_payout, s.biggest_payout, s.sum_salary, t.how_many_titles, t.last_promotion
           FROM employees AS e
-          LEFT JOIN(SELECT count(salary) as how_many_withdrawals, max(salary) as biggest_payout, min(salary) as smallest_payout, sum(salary) as sum_salary, employee_id FROM salaries GROUP BY employee_id) AS s
+          LEFT JOIN(SELECT count(salary) as how_many_withdrawals, max(salary) as biggest_payout, min(salary) as smallest_payout, sum(salary) as sum_salary, employee_id FROM salary GROUP BY employee_id) AS s
           ON e.id = s.employee_id
           LEFT JOIN(SELECT count(title) as how_many_titles, employee_id, MAX(from_date) as last_promotion FROM titles GROUP BY employee_id) AS t
           ON e.id = t.employee_id
-          WHERE gender = "M" AND hire_date < '2015-01-01' AND last_promotion < '2020-01-01' AND sum_salary > 100000 ORDER BY sum_salary desc`,
+          WHERE gender = 'F' AND hire_date < '2015-01-01' AND last_promotion < '2020-01-01' AND sum_salary > 100000 ORDER BY sum_salary desc`,
         );
       });
 
@@ -302,11 +302,9 @@ class PgsqlService {
   //* Create tables
   private async createTables(): Promise<any | Error> {
     try {
-      await this.conn.query('DROP TABLE IF EXISTS empoyees CASCADE ');
-      await this.conn.query('DROP TABLE IF EXISTS salary CASCADE ');
-      await this.conn.query('DROP TABLE IF EXISTS titles CASCADE ');
-
-      console.log('Sdfsadf');
+      await this.conn.query('DROP TABLE IF EXISTS employees');
+      await this.conn.query('DROP TABLE IF EXISTS salary');
+      await this.conn.query('DROP TABLE IF EXISTS titles');
 
       await this.conn.query(`CREATE TABLE IF NOT EXISTS employees (
         id VARCHAR(255),
