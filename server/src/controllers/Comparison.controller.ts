@@ -88,10 +88,13 @@ class ComparisonController {
       const mongodbResult = await mongodb.insert(amount);
 
       res.status(200).json({
-        'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        'clickhouse-result': clickhouseResult,
-        'mongodb-result': mongodbResult,
+        key: 'Insert',
+        result: {
+          mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          clickhouse: clickhouseResult,
+          // mongodb: 'WIP',
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -122,7 +125,7 @@ class ComparisonController {
       const mongodbResult = await mongodb.selectEasy();
 
       res.status(200).json({
-        key: 'select-easy',
+        key: 'Easy select',
         result: {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
@@ -159,7 +162,7 @@ class ComparisonController {
       // const mongodbResult = await mongodb.selectMedium();
 
       res.status(200).json({
-        key: 'select-medium',
+        key: 'Medium select',
         result: {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
@@ -196,7 +199,7 @@ class ComparisonController {
       // const mongodbResult = await mongodb.selectHard();
 
       res.status(200).json({
-        key: 'select-hard',
+        key: 'Hard select',
         result: {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
@@ -230,10 +233,13 @@ class ComparisonController {
       // const mongodbResult = await mongodb.updateEasy();
 
       res.status(200).json({
-        // 'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        // 'clickhouse-result': clickhouseResult,
-        // 'mongodb-result': mongodbResult,
+        key: 'Easy update',
+        result: {
+          // mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          // clickhouse: clickhouseResult,
+          // mongodb: 'WIP',
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -261,10 +267,13 @@ class ComparisonController {
       // const mongodbResult = await mongodb.updateMedium();
 
       res.status(200).json({
-        // 'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        // 'clickhouse-result': clickhouseResult,
-        // 'mongodb-result': mongodbResult,
+        key: 'Medium update',
+        result: {
+          // mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          // clickhouse: clickhouseResult,
+          // mongodb: 'WIP',
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -292,10 +301,13 @@ class ComparisonController {
       // const mongodbResult = await mongodb.updateHard();
 
       res.status(200).json({
-        // 'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        // 'clickhouse-result': clickhouseResult,
-        // 'mongodb-result': mongodbResult,
+        key: 'Hard update',
+        result: {
+          // mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          // clickhouse: clickhouseResult,
+          // mongodb: 'WIP',
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -323,10 +335,13 @@ class ComparisonController {
       // const mongodbResult = await mongodb.deleteEasy();
 
       res.status(200).json({
-        // 'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        // 'clickhouse-result': clickhouseResult,
-        // 'mongodb-result': mongodbResult,
+        key: 'Easy delete',
+        result: {
+          // mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          // clickhouse: clickhouseResult,
+          // mongodb: 'WIP',
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -354,10 +369,13 @@ class ComparisonController {
       // const mongodbResult = await mongodb.deleteMedium();
 
       res.status(200).json({
-        // 'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        // 'clickhouse-result': clickhouseResult,
-        // 'mongodb-result': mongodbResult,
+        key: 'Medium delete',
+        result: {
+          // mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          // clickhouse: clickhouseResult,
+          // mongodb: 'WIP',
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -385,10 +403,13 @@ class ComparisonController {
       // const mongodbResult = await mongodb.deleteHard();
 
       res.status(200).json({
-        // 'mysql-result': mysqlResult,
-        'pgsql-result': pgsqlResult,
-        // 'clickhouse-result': clickhouseResult,
-        // 'mongodb-result': mongodbResult,
+        key: 'Hard delete',
+        result: {
+          // mysql: mysqlResult,
+          pgsql: pgsqlResult,
+          // clickhouse: clickhouseResult,
+          // mongodb: 'WIP',
+        },
       });
     } catch (error) {
       if (error instanceof Error) {
