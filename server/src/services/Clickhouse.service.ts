@@ -189,7 +189,15 @@ class ClickhouseService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
           query:
-            ``,
+            `ALTER TABLE salary
+            UPDATE salary = 4500
+            WHERE employee_id IN (
+              SELECT id
+              FROM employees
+              WHERE gender = 'M'
+                AND hire_date > '2000-01-01'
+            )
+            AND salary < 3000`,
         });
       });
 
@@ -237,7 +245,7 @@ class ClickhouseService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
           query:
-            ``,
+            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
         });
       });
 
@@ -261,7 +269,7 @@ class ClickhouseService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
           query:
-            ``,
+            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
         });
       });
 
@@ -285,7 +293,7 @@ class ClickhouseService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
           query:
-            ``,
+            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
         });
       });
 
@@ -317,11 +325,11 @@ class ClickhouseService {
         query: `
               CREATE TABLE IF NOT EXISTS employees(
                   id UInt32,
-                  birth_date String,
+                  birth_date Date32,
                   first_name String,
                   last_name String,
                   gender String,
-                  hire_date String
+                  hire_date Date32
               ) ENGINE = MergeTree ORDER BY id;
               `,
       });
@@ -330,8 +338,8 @@ class ClickhouseService {
               CREATE TABLE IF NOT EXISTS salary(
                   employee_id UInt32,
                   salary UInt32,
-                  from_date String,
-                  to_date String
+                  from_date Date32,
+                  to_date Date32
               ) ENGINE = MergeTree ORDER BY employee_id;
               `,
       });
@@ -340,8 +348,8 @@ class ClickhouseService {
               CREATE TABLE IF NOT EXISTS titles(
                   employee_id UInt32,
                   title String,
-                  from_date String,
-                  to_date String
+                  from_date Date32,
+                  to_date Date32
               ) ENGINE = MergeTree ORDER BY employee_id;
               `,
       });

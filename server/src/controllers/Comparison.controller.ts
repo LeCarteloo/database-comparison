@@ -226,8 +226,8 @@ class ComparisonController {
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.updateEasy();
 
-      // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.updateEasy();
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.updateEasy();
 
       // const mongodb = new MongodbService();
       // const mongodbResult = await mongodb.updateEasy();
@@ -237,7 +237,7 @@ class ComparisonController {
         result: {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
-          // clickhouse: clickhouseResult,
+          clickhouse: clickhouseResult,
           // mongodb: 'WIP',
         },
       });
@@ -260,8 +260,8 @@ class ComparisonController {
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.updateMedium();
 
-      // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.updateMedium();
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.updateMedium();
 
       // const mongodb = new MongodbService();
       // const mongodbResult = await mongodb.updateMedium();
@@ -271,7 +271,7 @@ class ComparisonController {
         result: {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
-          // clickhouse: clickhouseResult,
+          clickhouse: clickhouseResult,
           // mongodb: 'WIP',
         },
       });
@@ -328,8 +328,8 @@ class ComparisonController {
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.deleteEasy();
 
-      // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.deleteEasy();
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.deleteEasy();
 
       // const mongodb = new MongodbService();
       // const mongodbResult = await mongodb.deleteEasy();
@@ -339,7 +339,7 @@ class ComparisonController {
         result: {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
-          // clickhouse: clickhouseResult,
+          clickhouse: clickhouseResult,
           // mongodb: 'WIP',
         },
       });
@@ -362,8 +362,8 @@ class ComparisonController {
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.deleteMedium();
 
-      // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.deleteMedium();
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.deleteMedium();
 
       // const mongodb = new MongodbService();
       // const mongodbResult = await mongodb.deleteMedium();
@@ -373,7 +373,7 @@ class ComparisonController {
         result: {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
-          // clickhouse: clickhouseResult,
+          clickhouse: clickhouseResult,
           // mongodb: 'WIP',
         },
       });
@@ -396,8 +396,8 @@ class ComparisonController {
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.deleteHard();
 
-      // const clickhouse = new ClickhouseService();
-      // const clickhouseResult = await clickhouse.deleteHard();
+      const clickhouse = new ClickhouseService();
+      const clickhouseResult = await clickhouse.deleteHard();
 
       // const mongodb = new MongodbService();
       // const mongodbResult = await mongodb.deleteHard();
@@ -407,7 +407,7 @@ class ComparisonController {
         result: {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
-          // clickhouse: clickhouseResult,
+          clickhouse: clickhouseResult,
           // mongodb: 'WIP',
         },
       });
