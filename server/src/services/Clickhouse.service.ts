@@ -361,7 +361,18 @@ class ClickhouseService {
             ALTER TABLE 
               employees 
             DELETE WHERE 
-              id IN (SELECT DISTINCT e.id FROM salary s, employees e, titles t WHERE e.id = s.employee_id AND e.id = t.employee_id  AND s.salary > 2000)
+              id IN (
+                SELECT DISTINCT 
+                  e.id 
+                FROM 
+                  salary s, 
+                  employees e, 
+                  titles t 
+                WHERE 
+                  e.id = s.employee_id AND 
+                  e.id = t.employee_id AND 
+                  s.salary > 2000
+                )
           `,
         });
       });
