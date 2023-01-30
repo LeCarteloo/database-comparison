@@ -274,7 +274,24 @@ class ClickhouseService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
           query: `
-          
+            ALTER TABLE 
+              employees 
+            UPDATE 
+              hire_date = '2023-01-01'
+            WHERE 
+              id IN (
+                SELECT DISTINCT 
+                  e.id 
+                FROM 
+                  salary s, 
+                  employees e, 
+                  titles t 
+                WHERE 
+                  e.id = s.employee_id AND 
+                  e.id = t.employee_id AND 
+                  s.salary > 2000 AND 
+                  s.salary < 10000
+                ) 
           `,
         });
       });
@@ -390,9 +407,6 @@ class ClickhouseService {
       throw new Error('Unexpected errror');
     }
   }
-
-
-
 
   //* Create tables
   private async createTables() {
