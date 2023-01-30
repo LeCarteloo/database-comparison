@@ -7,6 +7,7 @@ import {
   BarChart,
   ResponsiveContainer,
   LabelList,
+  Tooltip,
 } from 'recharts';
 import { useComparisonContext } from '../../context/ComparisonContext';
 import { useNavigate } from 'react-router-dom';
@@ -74,6 +75,16 @@ const Overviewpage = () => {
                       value: 'operation',
                       position: 'insideBottomRight',
                     }}
+                  />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#141432' }}
+                    // labelStyle={{ backgroundColor: 'red' }}
+                    cursor={{ fill: '#1d1d42' }}
+                    // labelFormatter="ms"
+                    formatter={(value, name, props) => [
+                      Number(value).toFixed(4) + ' ms',
+                      name.toString().split('.')[1],
+                    ]}
                   />
                   <YAxis
                     stroke="#fff"

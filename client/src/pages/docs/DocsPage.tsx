@@ -98,6 +98,28 @@ const DocsPage = () => {
     },
   ];
 
+  const tables = [
+    {
+      headers: [
+        'id',
+        'birth_date',
+        'first_name',
+        'last_name',
+        'gender',
+        'hire_date',
+      ],
+      data: ['1', '1990-01-13', 'Peri', 'Brenn', 'M', '2017-11-07'],
+    },
+    {
+      headers: ['employee_id', 'salary', 'from_date', 'to_date'],
+      data: ['63', '2782', '2020-09-25', '2017-02-28'],
+    },
+    {
+      headers: ['employee_id', 'title', 'from_date', 'to_date'],
+      data: ['4', 'Manager', '2014-06-08', '2018-12-26'],
+    },
+  ];
+
   return (
     <motion.div
       animate={{ opacity: 1 }}
@@ -124,13 +146,34 @@ const DocsPage = () => {
             ))}
           </S.ContentList>
         </div>
+        <section>
+          <h2>Appearance of database</h2>
+          {tables.map((table, i) => (
+            <S.Table key={i}>
+              <thead>
+                <tr>
+                  {table.headers.map((header) => (
+                    <th key={header}>{header}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {table.data.map((dat) => (
+                    <td key={dat}>{dat}</td>
+                  ))}
+                </tr>
+              </tbody>
+            </S.Table>
+          ))}
+        </section>
         {sections.map((section) => (
           <section key={section.id} id={section.id}>
             <h2 style={{ marginTop: '0.5em' }}>{section.title}</h2>
             <p>{section.desc}</p>
             {section.subSections.map((subSection) => (
               <div key={subSection.subTitle}>
-                <h3 style={{ marginTop: '0.7em' }}>
+                <h3 style={{ marginTop: '0.7em', color: '#6fcf97' }}>
                   Level: {subSection.subTitle}
                 </h3>
                 {subSection.queries.map((query) => (

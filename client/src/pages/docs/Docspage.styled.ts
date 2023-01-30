@@ -23,4 +23,25 @@ const ContentLink = styled.a`
   }
 `;
 
-export { Header, ContentBlock, ContentList, ContentLink };
+const Table = styled.table`
+  width: 100%;
+  margin-top: 1em;
+  text-align: center;
+  border-collapse: collapse;
+  border: 1px solid #fff;
+  table-layout: fixed;
+  tr {
+    width: 100%;
+  }
+  th {
+    padding: 0.2em;
+    border: 1px solid #fff;
+    background-color: #1d1d42;
+  }
+  td {
+    padding: 0.2em;
+    border: 1px solid #fff;
+  }
+`;
+
+export { Header, ContentBlock, ContentList, ContentLink, Table };

@@ -25,8 +25,14 @@ interface Actions {
     level: number | undefined;
     isFinished: boolean;
   };
-  // update: number | undefined;
-  // delete: number | undefined;
+  update: {
+    level: number | undefined;
+    isFinished: boolean;
+  };
+  delete: {
+    level: number | undefined;
+    isFinished: boolean;
+  };
 }
 
 interface LoaderItems {
@@ -50,13 +56,20 @@ const Homepage = () => {
       level: undefined,
       isFinished: false,
     },
-    // delete: undefined,
-    // update: undefined,
+    delete: {
+      level: undefined,
+      isFinished: false,
+    },
+    update: {
+      level: undefined,
+      isFinished: false,
+    },
   });
   const [isFetching, setIsFetching] = useState(false);
   const navigate = useNavigate();
   const { comparisonData, setComparisonData } = useComparisonContext();
   const { useStorage, setUseStorage } = useStorageContext();
+
   const sections: Sections[] = [
     {
       title: 'Insert',
@@ -94,6 +107,42 @@ const Homepage = () => {
         },
       ],
     },
+    {
+      title: 'Update',
+      action: 'update',
+      blocks: [
+        {
+          icon: <Edit fontSize="large" />,
+          label: 'Easy update',
+        },
+        {
+          icon: <Edit fontSize="large" />,
+          label: 'Medium update',
+        },
+        {
+          icon: <Edit fontSize="large" />,
+          label: 'Hard update',
+        },
+      ],
+    },
+    {
+      title: 'Delete',
+      action: 'delete',
+      blocks: [
+        {
+          icon: <DeleteForever fontSize="large" />,
+          label: 'Easy delete',
+        },
+        {
+          icon: <DeleteForever fontSize="large" />,
+          label: 'Medium delete',
+        },
+        {
+          icon: <DeleteForever fontSize="large" />,
+          label: 'Hard delete',
+        },
+      ],
+    },
   ];
 
   const handleClearContext = async () => {
@@ -125,6 +174,69 @@ const Homepage = () => {
     };
 
     setIsFetching(true);
+
+    switch (actions.insert?.level) {
+      case 0: {
+        const response = await axios.post(
+          'http://localhost:3000/api/insert/50000'
+        );
+
+        setActions((prev: Actions) => ({
+          ...prev,
+          insert: { ...actions.insert, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, {
+            ...response.data,
+            key: 'Easy insert',
+          });
+        });
+
+        break;
+      }
+      case 1: {
+        const response = await axios.post(
+          'http://localhost:3000/api/insert/100000'
+        );
+
+        setActions((prev: Actions) => ({
+          ...prev,
+          insert: { ...actions.insert, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, {
+            ...response.data,
+            key: 'Medium insert',
+          });
+        });
+
+        break;
+      }
+      case 2: {
+        const response = await axios.post(
+          'http://localhost:3000/api/insert/250000'
+        );
+
+        setActions((prev: Actions) => ({
+          ...prev,
+          insert: { ...actions.insert, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, {
+            ...response.data,
+            key: 'Hard insert',
+          });
+        });
+
+        break;
+      }
+    }
 
     switch (actions.select?.level) {
       case 0: {
@@ -178,66 +290,107 @@ const Homepage = () => {
       }
     }
 
-    switch (actions.insert?.level) {
+    switch (actions.update?.level) {
       case 0: {
         const response = await axios.post(
-          'http://localhost:3000/api/insert/50000'
+          'http://localhost:3000/api/update/easy'
         );
 
         setActions((prev: Actions) => ({
           ...prev,
-          insert: { ...actions.insert, isFinished: true },
+          update: { ...actions.update, isFinished: true },
         }));
 
         // @ts-ignore
         setComparisonData((prevState: ComparisonData[]) => {
-          return removeDuplicates(prevState, {
-            ...response.data,
-            key: 'insert-easy',
-          });
+          return removeDuplicates(prevState, response.data);
         });
 
         break;
       }
       case 1: {
         const response = await axios.post(
-          'http://localhost:3000/api/insert/100000'
+          'http://localhost:3000/api/update/medium'
         );
 
         setActions((prev: Actions) => ({
           ...prev,
-          insert: { ...actions.insert, isFinished: true },
+          update: { ...actions.update, isFinished: true },
         }));
 
         // @ts-ignore
         setComparisonData((prevState: ComparisonData[]) => {
-          return removeDuplicates(prevState, {
-            ...response.data,
-            key: 'insert-medium',
-          });
+          return removeDuplicates(prevState, response.data);
         });
 
         break;
       }
       case 2: {
         const response = await axios.post(
-          'http://localhost:3000/api/insert/250000'
+          'http://localhost:3000/api/update/hard'
         );
 
         setActions((prev: Actions) => ({
           ...prev,
-          insert: { ...actions.insert, isFinished: true },
+          update: { ...actions.update, isFinished: true },
         }));
 
         // @ts-ignore
         setComparisonData((prevState: ComparisonData[]) => {
-          return removeDuplicates(prevState, {
-            ...response.data,
-            key: 'insert-hard',
-          });
+          return removeDuplicates(prevState, response.data);
+        });
+      }
+    }
+
+    switch (actions.delete?.level) {
+      case 0: {
+        const response = await axios.delete(
+          'http://localhost:3000/api/delete/easy'
+        );
+
+        setActions((prev: Actions) => ({
+          ...prev,
+          delete: { ...actions.delete, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, response.data);
         });
 
         break;
+      }
+      case 1: {
+        const response = await axios.delete(
+          'http://localhost:3000/api/delete/medium'
+        );
+
+        setActions((prev: Actions) => ({
+          ...prev,
+          delete: { ...actions.delete, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, response.data);
+        });
+
+        break;
+      }
+      case 2: {
+        const response = await axios.delete(
+          'http://localhost:3000/api/delete/hard'
+        );
+
+        setActions((prev: Actions) => ({
+          ...prev,
+          delete: { ...actions.delete, isFinished: true },
+        }));
+
+        // @ts-ignore
+        setComparisonData((prevState: ComparisonData[]) => {
+          return removeDuplicates(prevState, response.data);
+        });
       }
     }
 
