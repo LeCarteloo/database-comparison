@@ -82,8 +82,6 @@ class PgsqlService {
         );
       });
 
-      await this.insertCSV();
-
       return {
         records: result.rows.length,
         memory: memory,
@@ -105,8 +103,6 @@ class PgsqlService {
           `SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
         );
       });
-
-      await this.insertCSV();
 
       return {
         records: result.rows.length,
@@ -135,8 +131,6 @@ class PgsqlService {
           WHERE gender = 'F' AND hire_date < '2015-01-01' AND last_promotion < '2020-01-01' AND sum_salary > 100000 ORDER BY sum_salary desc`,
         );
       });
-
-      await this.insertCSV();
 
       return {
         records: result.rows.length,
@@ -180,7 +174,7 @@ class PgsqlService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
           `UPDATE employees AS e
-          INNER JOIN salaries AS s
+          INNER JOIN salary AS s
             ON s.employee_id = e.id
         SET s.salary = 4500
         WHERE e.gender = 'M' AND s.salary < 3000 AND e.hire_date > '2000-01-01'`,
@@ -204,21 +198,36 @@ class PgsqlService {
   //* Hard update:
   public async updateHard(): Promise<any | Error> {
     try {
-      const { result, memory, time } = await checkPerformance(() => {
-        return this.conn.query(
-          `UPDATE employees AS e
-          INNER JOIN titles AS t
-            ON t.employee_id = e.id
-          INNER JOIN salaries AS s
-            ON s.employee_id = e.id
-        SET s.salary = 6331, t.to_date = CURDATE(), t.title = 'Old worker'
-        WHERE s.salary < 5001 AND e.hire_date < '1995-01-01' AND t.to_date > '2011-11-01'`,
+      const { result, memory, time } = await checkPerformance(async () => {
+        const data = new Date().toISOString().slice(0, 10);
+
+        await this.conn.query('BEGIN');
+        await this.conn.query(
+          `UPDATE titles t
+          SET to_date = '${data}', title = 'Old worker'
+          FROM employees e
+          INNER JOIN salary s ON s.employee_id = e.id
+          WHERE s.salary > 10001 AND t.to_date > '2018-11-01'
+
+          `,
         );
+        await this.conn.query(
+          `UPDATE salary s
+          SET salary = 99999
+          FROM employees e
+          INNER JOIN titles t ON t.employee_id = e.id
+          WHERE s.salary > 10001 AND t.to_date > '2018-11-01'
+          
+          `,
+        );
+
+        await this.conn.query('COMMIT');
       });
 
       await this.insertCSV();
 
       return {
+        // records: result.rowCount,
         memory: memory,
         time: time,
       };
