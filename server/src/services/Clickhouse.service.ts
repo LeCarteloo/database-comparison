@@ -90,7 +90,14 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query: 'SELECT * FROM salary s WHERE s.salary >= 3000',
+          query: `
+            SELECT 
+              * 
+            FROM 
+              salary s 
+            WHERE 
+              s.salary >= 3000
+          `,
         });
       });
 
@@ -111,8 +118,18 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            "SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id",
+          query: `
+            SELECT 
+              * 
+            FROM 
+              salary s, 
+              employees e, 
+              titles t 
+            WHERE 
+              e.id = t.employee_id AND 
+              e.id = s.employee_id AND 
+              title LIKE '%BackEnd%'
+          `,
         });
       });
 
@@ -134,17 +151,39 @@ class ClickhouseService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
           query: `
-          SELECT 
-          e.id, e.first_name, e.last_name, e.gender, e.hire_date, 
-          s.how_many_withdrawals,s.smallest_payout, s.biggest_payout, s.sum_salary, 
-          t.how_many_titles, t.last_promotion
-          FROM 
-          employees e,
-          (SELECT count(salary) as how_many_withdrawals, min(salary) as smallest_payout, max(salary) as biggest_payout, sum(salary) as sum_salary, employee_id FROM salary GROUP BY employee_id) AS s,
-          (SELECT count(title) as how_many_titles, employee_id, MAX(from_date) as last_promotion FROM titles GROUP BY employee_id) AS t
-          WHERE e.id = s.employee_id AND e.id = t.employee_id AND e.gender = 'F' AND e.hire_date < '2015-01-01' AND 
-          s.sum_salary > 100000
-          ORDER BY s.sum_salary desc`,
+            SELECT 
+              e.id, e.first_name, e.last_name, e.gender, e.hire_date, 
+              s.how_many_withdrawals,s.smallest_payout, s.biggest_payout, s.sum_salary, 
+              t.how_many_titles, t.last_promotion 
+            FROM 
+              employees e, 
+              (SELECT 
+                  count(salary) as how_many_withdrawals, 
+                  min(salary) as smallest_payout, 
+                  max(salary) as biggest_payout, 
+                  sum(salary) as sum_salary, 
+                  employee_id 
+                FROM 
+                  salary 
+                GROUP BY 
+                  employee_id) AS s, 
+              (SELECT 
+                  count(title) as how_many_titles, 
+                  MAX(from_date) as last_promotion, 
+                  employee_id 
+                FROM 
+                  titles 
+                GROUP BY 
+                  employee_id) AS t 
+            WHERE 
+              e.id = s.employee_id AND 
+              e.id = t.employee_id AND 
+              e.gender = 'F' AND 
+              e.hire_date < '2015-01-01' AND 
+              s.sum_salary > 100000 
+            ORDER BY 
+              s.sum_salary DESC
+          `,
         });
       });
 
@@ -165,7 +204,14 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query: `ALTER TABLE salary UPDATE salary = 2500 WHERE salary < 2000`,
+          query: `
+            ALTER TABLE 
+                salary 
+              UPDATE 
+                salary = 2500 
+              WHERE 
+                salary < 2000
+          `,
         });
       });
 
@@ -188,16 +234,23 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            `ALTER TABLE salary
-            UPDATE salary = 4500
-            WHERE employee_id IN (
-              SELECT id
-              FROM employees
-              WHERE gender = 'M'
-                AND hire_date > '2000-01-01'
-            )
-            AND salary < 3000`,
+          query: `
+            ALTER TABLE 
+              salary 
+            UPDATE 
+              salary = 4500 
+            WHERE 
+              employee_id IN ( 
+                SELECT 
+                  id 
+                FROM 
+                  employees 
+                WHERE 
+                  gender = 'M' AND 
+                  hire_date > '2000-01-01' 
+              ) AND 
+              salary < 3000
+          `,
         });
       });
 
@@ -220,8 +273,9 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            ``,
+          query: `
+          
+          `,
         });
       });
 
@@ -244,8 +298,12 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
+          query: `
+            ALTER TABLE 
+              titles 
+            DELETE WHERE 
+              title = 'Junior BackEnd'
+          `,
         });
       });
 
@@ -268,8 +326,15 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
+          query: `
+            ALTER TABLE 
+              salary 
+            DELETE WHERE 
+              salary > 1500 AND 
+              salary < 7500 AND 
+              from_date > '2011-01-01' AND 
+              to_date < '2020-01-01'
+          `,
         });
       });
 
@@ -325,11 +390,11 @@ class ClickhouseService {
         query: `
               CREATE TABLE IF NOT EXISTS employees(
                   id UInt32,
-                  birth_date Date32,
+                  birth_date String,
                   first_name String,
                   last_name String,
                   gender String,
-                  hire_date Date32
+                  hire_date String
               ) ENGINE = MergeTree ORDER BY id;
               `,
       });
@@ -338,8 +403,8 @@ class ClickhouseService {
               CREATE TABLE IF NOT EXISTS salary(
                   employee_id UInt32,
                   salary UInt32,
-                  from_date Date32,
-                  to_date Date32
+                  from_date String,
+                  to_date String
               ) ENGINE = MergeTree ORDER BY employee_id;
               `,
       });
@@ -348,8 +413,8 @@ class ClickhouseService {
               CREATE TABLE IF NOT EXISTS titles(
                   employee_id UInt32,
                   title String,
-                  from_date Date32,
-                  to_date Date32
+                  from_date String,
+                  to_date String
               ) ENGINE = MergeTree ORDER BY employee_id;
               `,
       });
