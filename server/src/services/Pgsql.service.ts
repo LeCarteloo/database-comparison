@@ -205,27 +205,37 @@ class PgsqlService {
       const { result, memory, time } = await checkPerformance(async () => {
         const data = new Date().toISOString().slice(0, 10);
 
-        await this.conn.query('BEGIN');
+        // await this.conn.query('BEGIN');
+        // await this.conn.query(
+        //   `UPDATE titles
+        //   SET to_date = '${data}', title = 'Old worker'
+        //   WHERE to_date > '2018-11-01'
+
+        //   `,
+        // );
+        // await this.conn.query(
+        //   `UPDATE salary
+        //   SET salary = 99999
+        //    WHERE salary > 10001
+
+        //   `,
+        // );
+
+        // await this.conn.query('COMMIT');
+
         await this.conn.query(
-          `UPDATE titles t
-          SET to_date = '${data}', title = 'Old worker'
-          FROM employees e
-          INNER JOIN salary s ON s.employee_id = e.id
-          WHERE s.salary > 10001 AND t.to_date > '2018-11-01'
+          `UPDATE employees
+          SET hire_date = '2023-01-01'
+          WHERE id IN (
+          SELECT e.id
+          FROM salary s
+          JOIN employees e ON e.id = s.employee_id
+          JOIN titles t ON e.id = t.employee_id
+          WHERE s.salary > 2000 AND s.salary < 10000
+          )
 
           `,
         );
-        await this.conn.query(
-          `UPDATE salary s
-          SET salary = 99999
-          FROM employees e
-          INNER JOIN titles t ON t.employee_id = e.id
-          WHERE s.salary > 10001 AND t.to_date > '2018-11-01'
-          
-          `,
-        );
-
-        await this.conn.query('COMMIT');
       });
 
       await this.insertCSV();
