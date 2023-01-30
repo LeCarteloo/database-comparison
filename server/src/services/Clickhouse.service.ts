@@ -357,8 +357,12 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
+          query: `
+            ALTER TABLE 
+              employees 
+            DELETE WHERE 
+              id IN (SELECT DISTINCT e.id FROM salary s, employees e, titles t WHERE e.id = s.employee_id AND e.id = t.employee_id  AND s.salary > 2000)
+          `,
         });
       });
 
