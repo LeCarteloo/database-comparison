@@ -82,8 +82,6 @@ class PgsqlService {
         );
       });
 
-      await this.insertCSV();
-
       return {
         records: result.rows.length,
         memory: memory,
@@ -105,8 +103,6 @@ class PgsqlService {
           `SELECT DISTINCT e.* FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
         );
       });
-
-      await this.insertCSV();
 
       return {
         records: result.rows.length,
@@ -135,8 +131,6 @@ class PgsqlService {
           WHERE gender = 'F' AND hire_date < '2015-01-01' AND last_promotion < '2020-01-01' AND sum_salary > 100000 ORDER BY sum_salary desc`,
         );
       });
-
-      await this.insertCSV();
 
       return {
         records: result.rows.length,
@@ -208,25 +202,46 @@ class PgsqlService {
   //* Hard update:
   public async updateHard(): Promise<any | Error> {
     try {
-      const { result, memory, time } = await checkPerformance(() => {
-        return this.conn.query(
-          `UPDATE salary AS s
-          SET salary = 6331, 
-          FROM employees AS e
-            INNER JOIN titles AS t
-              ON t.employee_id = e.id
-        WHERE s.employee_id = e.id
-          AND s.salary < 5001 
-          AND e.hire_date < '1995-01-01' 
-          AND t.to_date > '2011-11-01'
-          SET t.to_date = CURRENT_DATE, 
-          t.title = 'Old worker'`,
+      const { result, memory, time } = await checkPerformance(async () => {
+        const data = new Date().toISOString().slice(0, 10);
+
+        // await this.conn.query('BEGIN');
+        // await this.conn.query(
+        //   `UPDATE titles
+        //   SET to_date = '${data}', title = 'Old worker'
+        //   WHERE to_date > '2018-11-01'
+
+        //   `,
+        // );
+        // await this.conn.query(
+        //   `UPDATE salary
+        //   SET salary = 99999
+        //    WHERE salary > 10001
+
+        //   `,
+        // );
+
+        // await this.conn.query('COMMIT');
+
+        await this.conn.query(
+          `UPDATE employees
+          SET hire_date = '2023-01-01'
+          WHERE id IN (
+          SELECT e.id
+          FROM salary s
+          JOIN employees e ON e.id = s.employee_id
+          JOIN titles t ON e.id = t.employee_id
+          WHERE s.salary > 2000 AND s.salary < 10000
+          )
+
+          `,
         );
       });
 
       await this.insertCSV();
 
       return {
+        // records: result.rowCount,
         memory: memory,
         time: time,
       };
@@ -243,7 +258,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
+          `DELETE FROM titles WHERE title = 'Junior BackEnd'`,
         );
       });
 
@@ -266,7 +281,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
+          `DELETE FROM salary WHERE salary > 1500 AND salary < 7500 AND from_date > '2011-01-01' AND to_date < '2020-01-01'`,
         );
       });
 
@@ -289,7 +304,10 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
+          `DELETE FROM 
+          employees 
+        WHERE 
+          id IN (SELECT DISTINCT e.id FROM salary s, employees e, titles t WHERE e.id = s.employee_id AND e.id = t.employee_id  AND s.salary > 2000)`,
         );
       });
 
