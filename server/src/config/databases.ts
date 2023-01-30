@@ -1,13 +1,15 @@
-import { ClickHouseClient, createClient } from '@clickhouse/client';
+import { createClient } from '@clickhouse/client';
 import mongoose, { Connection } from 'mongoose';
 import mysql from 'mysql2';
 import pg from 'pg';
+import cassandra, { Client } from 'cassandra-driver';
 import { red, green } from 'colors';
 
 let PostgresConnection: any;
 let MysqlConnection: any;
 let MongoConnection: Connection;
 let ClickhouseConnection: any;
+let CassandraConnection: any;
 
 const connectDatabases = async () => {
   //* ClickHouse
@@ -42,6 +44,24 @@ const connectDatabases = async () => {
     } catch (error) {
       console.log(red('- Unable to connect with MongoDB'));
       process.exit(1);
+    }
+  };
+
+  //* Cassandra
+  const connectCassandra = async () => {
+    try {
+      const client = new Client({
+        contactPoints: ['localhost:9042'],
+        localDataCenter: 'datacenter1',
+      });
+
+      await client.connect();
+
+      console.log(green('- Connected with Cassandra'));
+      return client;
+    } catch (error) {
+      console.log(red('- Unable to connect with Cassandra'));
+      console.log(error);
     }
   };
 
@@ -92,8 +112,9 @@ const connectDatabases = async () => {
 
   PostgresConnection = await connectPgsql();
   MysqlConnection = await connectMysql();
-  MongoConnection = await connectMongodb();
   ClickhouseConnection = await connectClickHouse();
+  CassandraConnection = await connectCassandra();
+  MongoConnection = await connectMongodb();
 };
 
 export {
@@ -101,5 +122,6 @@ export {
   PostgresConnection,
   MysqlConnection,
   MongoConnection,
+  CassandraConnection,
   ClickhouseConnection,
 };

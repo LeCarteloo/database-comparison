@@ -1,7 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import { connectDatabases } from './config/databases';
+import { CassandraConnection, connectDatabases } from './config/databases';
 import { blue } from 'colors';
 
 class App {

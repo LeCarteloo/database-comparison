@@ -6,7 +6,7 @@ import csvtojson from 'csvtojson';
 class ClickhouseService {
   private conn = ClickhouseConnection;
 
-  constructor() { }
+  constructor() {}
 
   //* Insert data from CSV file
   public async insertCSV() {
@@ -58,16 +58,18 @@ class ClickhouseService {
         ]);
       }
 
-      let valuesToAdd = values.map(
-        (val) =>
-          `{"employee_id": "${val[0]}", "salary": "${val[1]}", "from_date": "${val[2]}", "to_date": "${val[3]}"}`
-      ).join(',');
+      let valuesToAdd = values
+        .map(
+          (val) =>
+            `{"employee_id": "${val[0]}", "salary": "${val[1]}", "from_date": "${val[2]}", "to_date": "${val[3]}"}`,
+        )
+        .join(',');
 
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.insert({
           table: 'salary',
           values: JSON.parse(`[${valuesToAdd}]`),
-          format: 'JSONEachRow'
+          format: 'JSONEachRow',
         });
       });
 
@@ -112,7 +114,7 @@ class ClickhouseService {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
           query:
-            "SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id",
+            "SELECT DISTINCT e.* FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id",
         });
       });
 
@@ -188,8 +190,7 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            `ALTER TABLE salary
+          query: `ALTER TABLE salary
             UPDATE salary = 4500
             WHERE employee_id IN (
               SELECT id
@@ -220,8 +221,7 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            ``,
+          query: ``,
         });
       });
 
@@ -244,8 +244,7 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
+          query: `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
         });
       });
 
@@ -268,8 +267,7 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
+          query: `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
         });
       });
 
@@ -292,8 +290,7 @@ class ClickhouseService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
-          query:
-            `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
+          query: `ALTER TABLE titles DELETE WHERE title = 'Junior BackEnd'`,
         });
       });
 
@@ -310,9 +307,6 @@ class ClickhouseService {
       throw new Error('Unexpected errror');
     }
   }
-
-
-
 
   //* Create tables
   private async createTables() {

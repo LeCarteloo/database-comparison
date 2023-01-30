@@ -12,10 +12,7 @@ class MongodbService {
   public async selectEasy() {
     try {
       const { result, memory, time } = await checkPerformance(async () => {
-        return await mongoose.connection.db
-          .collection('salary')
-          .find({ salary: { $gte: 3000 } })
-          .toArray();
+        return await this.conn.db.collection('salary').find().toArray();
       });
 
       return {
@@ -34,7 +31,40 @@ class MongodbService {
   //* WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id
   public async selectMedium() {
     try {
-      const { result, memory, time } = await checkPerformance(async () => {});
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db
+          .collection('employees')
+          .aggregate([
+            {
+              $lookup: {
+                from: 'titles',
+                localField: 'id',
+                foreignField: 'employee_id',
+                as: 'title_info',
+              },
+            },
+            {
+              $lookup: {
+                from: 'salary',
+                localField: 'id',
+                foreignField: 'employee_id',
+                as: 'salary_info',
+              },
+            },
+            {
+              $match: { 'title_info.title': { $regex: /BackEnd/ } },
+            },
+            {
+              $project: {
+                _id: 1,
+                'e.id': 1,
+                'title_info.title': 1,
+                'salary_info.salary': 1,
+              },
+            },
+          ])
+          .toArray();
+      });
 
       return {
         records: result.length,
@@ -67,6 +97,26 @@ class MongodbService {
       return {
         memory: memory,
         time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  public async updateEasy() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db
+          .collection('salary')
+          .updateMany({ salary: { $lt: 2000 } }, { $set: { salary: 2500 } });
+      });
+
+      return {
+        records: result.length,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {

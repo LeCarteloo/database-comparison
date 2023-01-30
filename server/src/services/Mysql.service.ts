@@ -142,7 +142,7 @@ class MysqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
+          `SELECT DISTINCT e.* FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
         );
       });
 
@@ -362,19 +362,19 @@ class MysqlService {
         first_name VARCHAR(255),
         last_name VARCHAR(255),
         gender VARCHAR(255),
-        hire_date DATE
+        hire_date VARCHAR(255)
         )`);
       await this.conn.execute(`CREATE TABLE IF NOT EXISTS salary (
         employee_id VARCHAR(255),
         salary INT,
-        from_date DATE,
-        to_date DATE
+        from_date VARCHAR(255),
+        to_date VARCHAR(255)
         )`);
       await this.conn.execute(`CREATE TABLE IF NOT EXISTS titles (
         employee_id VARCHAR(255),
         title VARCHAR(255),
-        from_date DATE,
-        to_date DATE
+        from_date VARCHAR(255),
+        to_date VARCHAR(255)
         )`);
     } catch (error) {
       if (error instanceof Error) {

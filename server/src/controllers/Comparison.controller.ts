@@ -1,3 +1,4 @@
+import CassandraService from '@/services/Cassandra.service';
 import ClickhouseService from '@/services/Clickhouse.service';
 import MongodbService from '@/services/Mongodb.service';
 import MysqlService from '@/services/Mysql.service';
@@ -13,9 +14,9 @@ class ComparisonController {
   }
 
   private initRoutes(): void {
-    this.router.post(`${this.path}/delete/easy`, this.deleteEasy);
-    this.router.post(`${this.path}/delete/medium`, this.deleteMedium);
-    this.router.post(`${this.path}/delete/hard`, this.deleteHard);
+    this.router.delete(`${this.path}/delete/easy`, this.deleteEasy);
+    this.router.delete(`${this.path}/delete/medium`, this.deleteMedium);
+    this.router.delete(`${this.path}/delete/hard`, this.deleteHard);
     this.router.post(`${this.path}/update/easy`, this.updateEasy);
     this.router.post(`${this.path}/update/medium`, this.updateMedium);
     this.router.post(`${this.path}/update/hard`, this.updateHard);
@@ -37,20 +38,18 @@ class ComparisonController {
     try {
       const mysqlService = new MysqlService();
       const mysqlResult = await mysqlService.insertCSV();
-      console.log('mysql');
 
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.insertCSV();
 
-      console.log('clickhouse');
-
       const pgsql = new PgsqlService();
       const pgsqlResult = await pgsql.insertCSV();
-      console.log('pgsql');
 
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.insertCSV();
-      console.log('mongodb');
+
+      const cassandra = new CassandraService();
+      const cassandraResult = await cassandra.insertCSV();
 
       res.status(200).json({
         'mysql-result': mysqlResult,
@@ -75,6 +74,7 @@ class ComparisonController {
   ): Promise<Response | void> {
     try {
       const amount = Number(req.params.amount);
+
       const mysqlService = new MysqlService();
       const mysqlResult = await mysqlService.insert(amount);
 
@@ -84,8 +84,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.insert(amount);
 
-      const mongodb = new MongodbService();
-      const mongodbResult = await mongodb.insert(amount);
+      // const mongodb = new MongodbService();
+      // const mongodbResult = await mongodb.insert(amount);
 
       res.status(200).json({
         key: 'Insert',
@@ -158,8 +158,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.selectMedium();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.selectMedium();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.selectMedium();
 
       res.status(200).json({
         key: 'Medium select',
@@ -167,7 +167,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: mongodbResult,
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -229,8 +229,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.updateEasy();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.updateEasy();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.updateEasy();
 
       res.status(200).json({
         key: 'Easy update',
@@ -238,7 +238,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -272,7 +272,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
+          // mongodb: mongodbResult,
         },
       });
     } catch (error) {

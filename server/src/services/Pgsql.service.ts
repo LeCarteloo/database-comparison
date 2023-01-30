@@ -102,7 +102,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
+          `SELECT DISTINCT e.* FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
         );
       });
 
