@@ -157,6 +157,7 @@ class PgsqlService {
       await this.insertCSV();
 
       return {
+        records: result.rowCount,
         memory: memory,
         time: time,
       };
@@ -173,17 +174,20 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `UPDATE employees AS e
-          INNER JOIN salary AS s
-            ON s.employee_id = e.id
-        SET s.salary = 4500
-        WHERE e.gender = 'M' AND s.salary < 3000 AND e.hire_date > '2000-01-01'`,
+          `UPDATE salary AS s
+          SET salary = 4500
+        FROM employees AS e
+        WHERE s.employee_id = e.id
+          AND e.gender = 'M' 
+          AND s.salary < 3000 
+          AND e.hire_date > '2000-01-01'`,
         );
       });
 
       await this.insertCSV();
 
       return {
+        records: result.rowCount,
         memory: memory,
         time: time,
       };
@@ -244,7 +248,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
+          `DELETE FROM titles WHERE title = 'Junior BackEnd'`,
         );
       });
 
@@ -267,7 +271,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
+          `DELETE FROM salary WHERE salary > 1500 AND salary < 7500 AND from_date > '2011-01-01' AND to_date < '2020-01-01'`,
         );
       });
 
@@ -290,7 +294,7 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
+          `DELETE FROM titles WHERE title = 'Junior BackEnd'`,
         );
       });
 
