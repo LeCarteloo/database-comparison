@@ -2,6 +2,7 @@ import { ClickhouseConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
 import fs from 'fs';
 import csvtojson from 'csvtojson';
+import { QueryResponse } from 'interfaces';
 
 class ClickhouseService {
   private conn = ClickhouseConnection;
@@ -9,7 +10,7 @@ class ClickhouseService {
   constructor() {}
 
   //* Insert data from CSV file
-  public async insertCSV() {
+  public async insertCSV(): Promise<QueryResponse | Error> {
     try {
       await this.createTables();
 
@@ -37,13 +38,14 @@ class ClickhouseService {
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Inserts certain amount of rows into table
-  public async insert(amount: number): Promise<any | Error> {
+  public async insert(amount: number): Promise<QueryResponse | Error> {
     try {
       const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
       let values: any[] = [];
@@ -76,19 +78,20 @@ class ClickhouseService {
       await this.insertCSV();
 
       return {
-        result: amount,
-        memory: memory,
-        time: time,
+        records: amount,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Easy select: Returns salaries higher than 3000
-  public async selectEasy() {
+  public async selectEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -110,13 +113,14 @@ class ClickhouseService {
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Medium select: Returns all salaries
-  public async selectMedium() {
+  public async selectMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -143,13 +147,14 @@ class ClickhouseService {
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Hard select
-  public async selectHard() {
+  public async selectHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -197,13 +202,14 @@ class ClickhouseService {
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Easy update: update salaries to 2500 benith 2000
-  public async updateEasy() {
+  public async updateEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -222,7 +228,7 @@ class ClickhouseService {
 
       return {
         memory: memory,
-        time: time,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -233,7 +239,7 @@ class ClickhouseService {
   }
 
   //* Medium update:
-  public async updateMedium(): Promise<any | Error> {
+  public async updateMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -261,7 +267,7 @@ class ClickhouseService {
 
       return {
         memory: memory,
-        time: time,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -272,7 +278,7 @@ class ClickhouseService {
   }
 
   //* Hard update:
-  public async updateHard(): Promise<any | Error> {
+  public async updateHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -303,7 +309,7 @@ class ClickhouseService {
 
       return {
         memory: memory,
-        time: time,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -314,7 +320,7 @@ class ClickhouseService {
   }
 
   //* Easy delete: delete all records where title = "Junior BackEnd"
-  public async deleteEasy(): Promise<any | Error> {
+  public async deleteEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -331,7 +337,7 @@ class ClickhouseService {
 
       return {
         memory: memory,
-        time: time,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -342,7 +348,7 @@ class ClickhouseService {
   }
 
   //* Medium delete:
-  public async deleteMedium(): Promise<any | Error> {
+  public async deleteMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -362,7 +368,7 @@ class ClickhouseService {
 
       return {
         memory: memory,
-        time: time,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -373,7 +379,7 @@ class ClickhouseService {
   }
 
   //* Hard delete:
-  public async deleteHard(): Promise<any | Error> {
+  public async deleteHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query({
@@ -401,7 +407,7 @@ class ClickhouseService {
 
       return {
         memory: memory,
-        time: time,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -412,7 +418,7 @@ class ClickhouseService {
   }
 
   //* Create tables
-  private async createTables() {
+  private async createTables(): Promise<void | Error> {
     try {
       await this.conn.exec({ query: `DROP TABLE IF EXISTS employees` });
       await this.conn.exec({ query: `DROP TABLE IF EXISTS salary` });

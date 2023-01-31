@@ -1,6 +1,7 @@
 import { CassandraConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
 import csvtojson from 'csvtojson';
+import { QueryResponse } from 'interfaces';
 
 class CassandraService {
   private conn = CassandraConnection;
@@ -8,20 +9,40 @@ class CassandraService {
   constructor() {}
 
   //* Select easy
-  public async selectEasy() {
+  public async selectEasy(): Promise<QueryResponse | Error> {
     try {
-      const { result, memory, time } = await checkPerformance(() => {
-        return this.conn.execute(
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.execute(
           `SELECT * FROM cassandra.salary WHERE salary >= 3000 ALLOW FILTERING`,
         );
       });
-      // console.log(result);
 
-      // const [rows] = await result;
       return {
-        // records: await result.result.length,
-        memory: memory,
-        time: time,
+        records: result.rows.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unexpected errror');
+    }
+  }
+
+  //* Select medium
+  public async selectMedium(): Promise<QueryResponse | Error> {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.execute(
+          `SELECT * FROM cassandra.salary WHERE salary >= 3000 ALLOW FILTERING`,
+        );
+      });
+
+      return {
+        records: result.rows.length,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -32,7 +53,7 @@ class CassandraService {
   }
 
   //* Insert data from CSV file
-  public async insertCSV() {
+  public async insertCSV(): Promise<QueryResponse | Error> {
     try {
       await this.createTables();
 
@@ -128,18 +149,19 @@ class CassandraService {
       });
 
       return {
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Create databaseA
-  private async createTables() {
+  private async createTables(): Promise<void | Error> {
     try {
       await this.conn.execute(
         `CREATE KEYSPACE IF NOT EXISTS cassandra WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}`,

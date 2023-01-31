@@ -1,6 +1,7 @@
 import { MysqlConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
 import csvtojson from 'csvtojson';
+import { QueryResponse } from 'interfaces';
 
 class MysqlService {
   private conn = MysqlConnection;
@@ -8,7 +9,7 @@ class MysqlService {
   constructor() {}
 
   //* Insert data from CSV file
-  public async insertCSV() {
+  public async insertCSV(): Promise<QueryResponse | Error> {
     try {
       await this.createTables();
 
@@ -72,13 +73,14 @@ class MysqlService {
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Inserting data
-  public async insert(amount: number): Promise<any | Error> {
+  public async insert(amount: number): Promise<QueryResponse | Error> {
     try {
       const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
       let values: any[] = [];
@@ -104,9 +106,9 @@ class MysqlService {
       await this.insertCSV();
 
       return {
-        result: amount,
-        memory: memory,
-        time: time,
+        records: amount,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -117,7 +119,7 @@ class MysqlService {
   }
 
   //* Easy select: Returns salaries higher than 3000
-  public async selectEasy(): Promise<any | Error> {
+  public async selectEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(`SELECT * FROM salary s WHERE s.salary >= 3000`);
@@ -126,8 +128,8 @@ class MysqlService {
       const [rows] = await result;
       return {
         records: await rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -138,7 +140,7 @@ class MysqlService {
   }
 
   //* Medium select: Returns all salaries
-  public async selectMedium(): Promise<any | Error> {
+  public async selectMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -149,8 +151,8 @@ class MysqlService {
       const [rows] = await result;
       return {
         records: await rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -161,7 +163,7 @@ class MysqlService {
   }
 
   //* Hard select
-  public async selectHard(): Promise<any | Error> {
+  public async selectHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -178,8 +180,8 @@ class MysqlService {
       const [rows] = await result;
       return {
         records: await rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -190,7 +192,7 @@ class MysqlService {
   }
 
   //* Easy update: update salaries to 2500 benith 2000
-  public async updateEasy(): Promise<any | Error> {
+  public async updateEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -203,8 +205,8 @@ class MysqlService {
       const [records] = await result;
       return {
         records: await records.affectedRows,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -215,7 +217,7 @@ class MysqlService {
   }
 
   //* Medium update:
-  public async updateMedium(): Promise<any | Error> {
+  public async updateMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -233,8 +235,8 @@ class MysqlService {
 
       return {
         records: await records.affectedRows,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -245,7 +247,7 @@ class MysqlService {
   }
 
   //* Hard update:
-  public async updateHard(): Promise<any | Error> {
+  public async updateHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -263,8 +265,8 @@ class MysqlService {
 
       return {
         records: await records.affectedRows,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -275,7 +277,7 @@ class MysqlService {
   }
 
   //* Easy delete: delete all records where title = "Junior BackEnd"
-  public async deleteEasy(): Promise<any | Error> {
+  public async deleteEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -288,8 +290,8 @@ class MysqlService {
       const [rows] = await result;
       return {
         records: await rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -300,7 +302,7 @@ class MysqlService {
   }
 
   //* Medium delete:
-  public async deleteMedium(): Promise<any | Error> {
+  public async deleteMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -313,8 +315,8 @@ class MysqlService {
       const [rows] = await result;
       return {
         records: await rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -325,7 +327,7 @@ class MysqlService {
   }
 
   //* Hard delete:
-  public async deleteHard(): Promise<any | Error> {
+  public async deleteHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -338,8 +340,8 @@ class MysqlService {
       const [rows] = await result;
       return {
         records: await rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -350,7 +352,7 @@ class MysqlService {
   }
 
   //* Create tables
-  private async createTables(): Promise<any | Error> {
+  private async createTables(): Promise<void | Error> {
     try {
       await this.conn.query('DROP TABLE IF EXISTS employees CASCADE ');
       await this.conn.query('DROP TABLE IF EXISTS salary CASCADE ');
