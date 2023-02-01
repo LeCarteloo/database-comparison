@@ -19,14 +19,6 @@ services:
     ports:
       - 8081:27017
 
-  cassandra:
-    image: cassandra
-    container_name: zespolowe_cassandra
-    ports:
-      - 9042:9042
-    environment:
-      - CASSANDRA_KEYSPACE=default
-
   postgres:
     image: postgres
     container_name: zespolowe_postgres

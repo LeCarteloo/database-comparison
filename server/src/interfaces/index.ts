@@ -1,7 +1,14 @@
+import { Router } from 'express';
+
 interface QueryResponse {
   records?: number;
   memory: number;
   time: number;
 }
 
-export { QueryResponse };
+interface Controller {
+  path: string;
+  router: Router;
+}
+
+export { QueryResponse, Controller };

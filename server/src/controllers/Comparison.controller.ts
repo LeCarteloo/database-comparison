@@ -1,11 +1,11 @@
-import CassandraService from '@/services/Cassandra.service';
 import ClickhouseService from '@/services/Clickhouse.service';
 import MongodbService from '@/services/Mongodb.service';
 import MysqlService from '@/services/Mysql.service';
 import PgsqlService from '@/services/Pgsql.service';
 import { Router, Request, Response, NextFunction } from 'express';
+import { Controller } from 'interfaces';
 
-class ComparisonController {
+class ComparisonController implements Controller {
   public path = '';
   public router = Router();
 
@@ -48,15 +48,11 @@ class ComparisonController {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.insertCSV();
 
-      const cassandra = new CassandraService();
-      const cassandraResult = await cassandra.insertCSV();
-
       res.status(200).json({
         'mysql-result': mysqlResult,
         'clickhouse-result': clickhouseResult,
         'pgsql-result': pgsqlResult,
         'mongodb-result': mongodbResult,
-        'cassandra-result': cassandraResult,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -122,11 +118,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.selectEasy();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.selectEasy();
-
-      const cassandra = new CassandraService();
-      const cassandraResult = await cassandra.selectEasy();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.selectEasy();
 
       res.status(200).json({
         key: 'Easy select',
@@ -134,8 +127,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: mongodbResult,
-          cassandra: cassandraResult,
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -209,7 +201,6 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
         },
       });
     } catch (error) {

@@ -1,5 +1,4 @@
 #!/bin/bash
-source docker/.env
 echo zespolowe
 
 cd docker

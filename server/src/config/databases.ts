@@ -9,7 +9,6 @@ let PostgresConnection: any;
 let MysqlConnection: any;
 let MongoConnection: Connection;
 let ClickhouseConnection: any;
-let CassandraConnection: any;
 
 const connectDatabases = async () => {
   //* ClickHouse
@@ -44,31 +43,6 @@ const connectDatabases = async () => {
     } catch (error) {
       console.log(red('- Unable to connect with MongoDB'));
       process.exit(1);
-    }
-  };
-
-  //* Cassandra
-  const connectCassandra = async () => {
-    try {
-      const client = new Client({
-        contactPoints: ['localhost:9042'],
-        localDataCenter: 'datacenter1',
-        socketOptions: {
-          readTimeout: 120000,
-          connectTimeout: 120000,
-        },
-        queryOptions: {
-          consistency: cassandra.types.consistencies.quorum,
-        },
-      });
-
-      await client.connect();
-
-      console.log(green('- Connected with Cassandra'));
-      return client;
-    } catch (error) {
-      console.log(red('- Unable to connect with Cassandra'));
-      console.log(error);
     }
   };
 
@@ -120,7 +94,6 @@ const connectDatabases = async () => {
   PostgresConnection = await connectPgsql();
   MysqlConnection = await connectMysql();
   ClickhouseConnection = await connectClickHouse();
-  CassandraConnection = await connectCassandra();
   MongoConnection = await connectMongodb();
 };
 
@@ -129,6 +102,5 @@ export {
   PostgresConnection,
   MysqlConnection,
   MongoConnection,
-  CassandraConnection,
   ClickhouseConnection,
 };
