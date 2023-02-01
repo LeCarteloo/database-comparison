@@ -2,128 +2,12 @@ import { MongoConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
 import mongoose, { mongo, Schema } from 'mongoose';
 import csvtojson from 'csvtojson';
+import { log } from 'util';
 
 class MongodbService {
   private conn = MongoConnection;
 
-  constructor() {}
-
-  //* Easy select: Returns salaries higher than 3000
-  public async selectEasy() {
-    try {
-      const { result, memory, time } = await checkPerformance(async () => {
-        return await this.conn.db.collection('salary').find().toArray();
-      });
-
-      return {
-        records: result.length,
-        memory,
-        time,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    }
-  }
-
-  //* SELECT * FROM salary AS s, employees AS e, titles AS t
-  //* WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id
-  public async selectMedium() {
-    try {
-      const { result, memory, time } = await checkPerformance(async () => {
-        return await this.conn.db
-          .collection('employees')
-          .aggregate([
-            {
-              $lookup: {
-                from: 'titles',
-                localField: 'id',
-                foreignField: 'employee_id',
-                as: 'title_info',
-              },
-            },
-            {
-              $lookup: {
-                from: 'salary',
-                localField: 'id',
-                foreignField: 'employee_id',
-                as: 'salary_info',
-              },
-            },
-            {
-              $match: { 'title_info.title': { $regex: /BackEnd/ } },
-            },
-            {
-              $project: {
-                _id: 1,
-                'e.id': 1,
-                'title_info.title': 1,
-                'salary_info.salary': 1,
-              },
-            },
-          ])
-          .toArray();
-      });
-
-      return {
-        records: result.length,
-        memory,
-        time,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    }
-  }
-
-  //* Insert data
-  public async insert(amount: number) {
-    try {
-      const { memory, time } = await checkPerformance(() => {
-        return mongoose.connection.db.collection('employees').insertMany([
-          {
-            title: 'Test1',
-            contest: 'Test2',
-          },
-          {
-            title: 'Test1',
-            contest: 'Test2',
-          },
-        ]);
-      });
-
-      return {
-        memory: memory,
-        time: time,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    }
-  }
-
-  public async updateEasy() {
-    try {
-      const { result, memory, time } = await checkPerformance(async () => {
-        return await this.conn.db
-          .collection('salary')
-          .updateMany({ salary: { $lt: 2000 } }, { $set: { salary: 2500 } });
-      });
-
-      return {
-        records: result.length,
-        memory,
-        time,
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    }
-  }
+  constructor() { }
 
   //* Insert data from CSV file
   public async insertCSV() {
@@ -187,9 +71,232 @@ class MongodbService {
     }
   }
 
+  //* Insert data
+  public async insert(amount: number) {
+    try {
+      const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
+      let values: any[] = [];
+
+      for (let i = 0; i < amount; i++) {
+        if (!salary[i]) break;
+        values.push([
+          salary[i].employee_id,
+          salary[i].salary,
+          salary[i].from_date,
+          salary[i].to_date,
+        ]);
+      }
+
+      let valuesToAdd = values
+        .map(
+          (val) =>
+            '{"employee_id": ' + val[0] + ', "salary": ' + val[1] + ', "from_date": "' + val[2] + '", "to_date": "' + val[3] + '"}',
+        )
+        .join(',');
+
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').insertMany(
+          JSON.parse("[" + valuesToAdd + "]")
+        );
+      });
+
+      return {
+        result: result['insertedCount'],
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  //* Easy select: Returns salaries higher than 3000
+  public async selectEasy() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').find({ 'salary': { $gte: 5000, $lt: 8000 } }).toArray();
+      });
+
+      return {
+        records: result.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  //* SELECT * FROM salary AS s, employees AS e, titles AS t
+  //* WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id
+  public async selectMedium() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').find({ 'salary': { $gte: 5000 } }).toArray();
+      });
+
+      return {
+        records: result.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+
+  public async selectHard() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').find().toArray();
+      });
+
+      return {
+        records: result.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  public async updateEasy() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').updateMany({ 'salary': { $gte: 5000, $lt: 8000 } }, { $set: { salary: 2500 } });
+      });
+
+      this.insertCSV();
+
+      return {
+        records: result,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  public async updateMedium() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').updateMany({ 'salary': { $gte: 5000 } }, { $set: { salary: 2500 } });
+      });
+
+      this.insertCSV();
+
+      return {
+        records: result.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+
+  public async updateHard() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').updateMany({}, { $set: { salary: 2500 } });
+      });
+
+      this.insertCSV();
+
+      return {
+        records: result.length,
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  public async deleteEasy() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').deleteMany({ 'salary': { $gte: 5000, $lt: 8000 } });
+      });
+
+      this.insertCSV();
+
+      return {
+        records: result['deletedCount'],
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+  public async deleteMedium() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').deleteMany({ 'salary': { $gte: 5000 } });
+      });
+
+      this.insertCSV();
+
+      return {
+        records: result['deletedCount'],
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
+
+  public async deleteHard() {
+    try {
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn.db.collection('salary').deleteMany({});
+      });
+
+      this.insertCSV();
+
+      return {
+        records: result['deletedCount'],
+        memory,
+        time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
   //* Create database
   private async createCollections() {
     try {
+      await this.conn.dropDatabase()
+
       const employeesExist = this.conn.db.collection('employees');
       const salaryExist = this.conn.db.collection('salary');
       const titlesExist = this.conn.db.collection('titles');
