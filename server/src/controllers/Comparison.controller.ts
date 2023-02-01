@@ -1,3 +1,4 @@
+import ArangodbService from '@/services/Arangodb.service';
 import ClickhouseService from '@/services/Clickhouse.service';
 import MongodbService from '@/services/Mongodb.service';
 import MysqlService from '@/services/Mysql.service';
@@ -48,11 +49,15 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.insertCSV();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.insertCSV();
+
       res.status(200).json({
         'mysql-result': mysqlResult,
         'clickhouse-result': clickhouseResult,
         'pgsql-result': pgsqlResult,
         'mongodb-result': mongodbResult,
+        'arango-result': arangoResult,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -121,6 +126,9 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.selectEasy();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.selectEasy();
+
       res.status(200).json({
         key: 'Easy select',
         result: {
@@ -128,6 +136,7 @@ class ComparisonController implements Controller {
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
@@ -158,6 +167,9 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.selectMedium();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.selectMedium();
+
       res.status(200).json({
         key: 'Medium select',
         result: {
@@ -165,6 +177,7 @@ class ComparisonController implements Controller {
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
@@ -195,6 +208,9 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.selectHard();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.selectMedium();
+
       res.status(200).json({
         key: 'Hard select',
         result: {
@@ -202,6 +218,7 @@ class ComparisonController implements Controller {
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
@@ -229,6 +246,9 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.updateEasy();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.updateEasy();
+
       res.status(200).json({
         key: 'Easy update',
         result: {
@@ -236,6 +256,7 @@ class ComparisonController implements Controller {
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
@@ -263,6 +284,9 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.updateMedium();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.updateMedium();
+
       res.status(200).json({
         key: 'Medium update',
         result: {
@@ -270,6 +294,7 @@ class ComparisonController implements Controller {
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
@@ -285,25 +310,29 @@ class ComparisonController implements Controller {
     next: NextFunction,
   ): Promise<Response | void> {
     try {
-      const mysqlService = new MysqlService();
-      const mysqlResult = await mysqlService.updateHard();
+      //   const mysqlService = new MysqlService();
+      //   const mysqlResult = await mysqlService.updateHard();
 
-      const pgsql = new PgsqlService();
-      const pgsqlResult = await pgsql.updateHard();
+      //   const pgsql = new PgsqlService();
+      //   const pgsqlResult = await pgsql.updateHard();
 
-      const clickhouse = new ClickhouseService();
-      const clickhouseResult = await clickhouse.updateHard();
+      //   const clickhouse = new ClickhouseService();
+      //   const clickhouseResult = await clickhouse.updateHard();
 
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.updateHard();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.updateHard();
+
       res.status(200).json({
         key: 'Hard update',
         result: {
-          mysql: mysqlResult,
-          pgsql: pgsqlResult,
-          clickhouse: clickhouseResult,
+          // mysql: mysqlResult,
+          // pgsql: pgsqlResult,
+          // clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
@@ -331,6 +360,9 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.deleteEasy();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.deleteEasy();
+
       res.status(200).json({
         key: 'Easy delete',
         result: {
@@ -338,6 +370,7 @@ class ComparisonController implements Controller {
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
@@ -365,6 +398,9 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.deleteMedium();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.deleteMedium();
+
       res.status(200).json({
         key: 'Medium delete',
         result: {
@@ -372,6 +408,7 @@ class ComparisonController implements Controller {
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
@@ -399,6 +436,9 @@ class ComparisonController implements Controller {
       const mongodb = new MongodbService();
       const mongodbResult = await mongodb.deleteHard();
 
+      const arango = new ArangodbService();
+      const arangoResult = await arango.deleteHard();
+
       res.status(200).json({
         key: 'Hard delete',
         result: {
@@ -406,6 +446,7 @@ class ComparisonController implements Controller {
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
           mongodb: mongodbResult,
+          arango: arangoResult,
         },
       });
     } catch (error) {
