@@ -84,8 +84,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.insert(amount);
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.insert(amount);
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.insert(amount);
 
       res.status(200).json({
         key: 'Insert',
@@ -93,7 +93,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -195,8 +195,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.selectHard();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.selectHard();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.selectHard();
 
       res.status(200).json({
         key: 'Hard select',
@@ -204,7 +204,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -235,9 +235,9 @@ class ComparisonController {
       res.status(200).json({
         key: 'Easy update',
         result: {
-          mysql: mysqlResult,
-          pgsql: pgsqlResult,
-          clickhouse: clickhouseResult,
+          // mysql: mysqlResult,
+          // pgsql: pgsqlResult,
+          // clickhouse: clickhouseResult,
           mongodb: mongodbResult,
         },
       });
@@ -263,8 +263,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.updateMedium();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.updateMedium();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.updateMedium();
 
       res.status(200).json({
         key: 'Medium update',
@@ -272,7 +272,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: mongodbResult,
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -297,8 +297,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.updateHard();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.updateHard();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.updateHard();
 
       res.status(200).json({
         key: 'Hard update',
@@ -306,7 +306,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -331,8 +331,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.deleteEasy();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.deleteEasy();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.deleteEasy();
 
       res.status(200).json({
         key: 'Easy delete',
@@ -340,7 +340,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -365,8 +365,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.deleteMedium();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.deleteMedium();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.deleteMedium();
 
       res.status(200).json({
         key: 'Medium delete',
@@ -374,7 +374,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
@@ -399,8 +399,8 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.deleteHard();
 
-      // const mongodb = new MongodbService();
-      // const mongodbResult = await mongodb.deleteHard();
+      const mongodb = new MongodbService();
+      const mongodbResult = await mongodb.deleteHard();
 
       res.status(200).json({
         key: 'Hard delete',
@@ -408,7 +408,7 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          // mongodb: 'WIP',
+          mongodb: mongodbResult,
         },
       });
     } catch (error) {
