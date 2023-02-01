@@ -2,13 +2,14 @@ import { createClient } from '@clickhouse/client';
 import mongoose, { Connection } from 'mongoose';
 import mysql from 'mysql2';
 import pg from 'pg';
-import cassandra, { Client } from 'cassandra-driver';
 import { red, green } from 'colors';
+import { Database } from 'arangojs';
 
 let PostgresConnection: any;
 let MysqlConnection: any;
 let MongoConnection: Connection;
 let ClickhouseConnection: any;
+let ArangoConnection: any;
 
 const connectDatabases = async () => {
   //* ClickHouse
@@ -43,6 +44,20 @@ const connectDatabases = async () => {
     } catch (error) {
       console.log(red('- Unable to connect with MongoDB'));
       process.exit(1);
+    }
+  };
+
+  const connectArangodb = async () => {
+    try {
+      const conn = new Database({
+        url: 'http://127.0.0.1:8529',
+        auth: { username: 'root', password: 'root' },
+      });
+
+      console.log(green('- Connected with ArangoDB'));
+      return conn;
+    } catch (error) {
+      console.log(red('- Unable to connect with ArangoDB'));
     }
   };
 
@@ -95,6 +110,7 @@ const connectDatabases = async () => {
   MysqlConnection = await connectMysql();
   ClickhouseConnection = await connectClickHouse();
   MongoConnection = await connectMongodb();
+  ArangoConnection = await connectArangodb();
 };
 
 export {
@@ -102,5 +118,6 @@ export {
   PostgresConnection,
   MysqlConnection,
   MongoConnection,
+  ArangoConnection,
   ClickhouseConnection,
 };
