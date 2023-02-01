@@ -56,6 +56,7 @@ class ComparisonController {
         'clickhouse-result': clickhouseResult,
         'pgsql-result': pgsqlResult,
         'mongodb-result': mongodbResult,
+        'cassandra-result': cassandraResult,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -121,8 +122,11 @@ class ComparisonController {
       const clickhouse = new ClickhouseService();
       const clickhouseResult = await clickhouse.selectEasy();
 
-      const mongodb = new MongodbService();
-      const mongodbResult = await mongodb.selectEasy();
+      // const mongodb = new MongodbService();
+      // const mongodbResult = await mongodb.selectEasy();
+
+      const cassandra = new CassandraService();
+      const cassandraResult = await cassandra.selectEasy();
 
       res.status(200).json({
         key: 'Easy select',
@@ -130,7 +134,8 @@ class ComparisonController {
           mysql: mysqlResult,
           pgsql: pgsqlResult,
           clickhouse: clickhouseResult,
-          mongodb: mongodbResult,
+          // mongodb: mongodbResult,
+          cassandra: cassandraResult,
         },
       });
     } catch (error) {

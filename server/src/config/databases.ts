@@ -53,6 +53,13 @@ const connectDatabases = async () => {
       const client = new Client({
         contactPoints: ['localhost:9042'],
         localDataCenter: 'datacenter1',
+        socketOptions: {
+          readTimeout: 120000,
+          connectTimeout: 120000,
+        },
+        queryOptions: {
+          consistency: cassandra.types.consistencies.quorum,
+        },
       });
 
       await client.connect();

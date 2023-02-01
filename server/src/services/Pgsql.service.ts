@@ -2,6 +2,7 @@ import { PostgresConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
 import { importCsvToPgsql } from '@/utilis/ImportCSV';
 import csvtojson from 'csvtojson';
+import { QueryResponse } from 'interfaces';
 
 class PgsqlService {
   private conn = PostgresConnection;
@@ -9,7 +10,7 @@ class PgsqlService {
   constructor() {}
 
   //* Insert data from CSV file
-  public async insertCSV() {
+  public async insertCSV(): Promise<QueryResponse | Error> {
     try {
       await this.createTables();
 
@@ -29,13 +30,14 @@ class PgsqlService {
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error(error.message);
       }
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Inserts data
-  public async insert(amount: number): Promise<any | Error> {
+  public async insert(amount: number): Promise<QueryResponse | Error> {
     try {
       const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
       let values: any[] = [];
@@ -61,20 +63,20 @@ class PgsqlService {
       await this.insertCSV();
 
       return {
-        result: amount,
-        memory: memory,
-        time: time,
+        records: amount,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
+        throw new Error(error.message);
       }
-      console.log('Unexpected error');
+      throw new Error('Unexpected errror');
     }
   }
 
   //* Easy select: Returns salaries higher than 3000
-  public async selectEasy(): Promise<any | Error> {
+  public async selectEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -84,8 +86,8 @@ class PgsqlService {
 
       return {
         records: result.rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -96,7 +98,7 @@ class PgsqlService {
   }
 
   //* Medium select: Returns all salaries
-  public async selectMedium(): Promise<any | Error> {
+  public async selectMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -106,8 +108,8 @@ class PgsqlService {
 
       return {
         records: result.rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -118,7 +120,7 @@ class PgsqlService {
   }
 
   //* Hard select
-  public async selectHard(): Promise<any | Error> {
+  public async selectHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -134,8 +136,8 @@ class PgsqlService {
 
       return {
         records: result.rows.length,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -146,7 +148,7 @@ class PgsqlService {
   }
 
   //* Easy update: update salaries to 2500 benith 2000
-  public async updateEasy(): Promise<any | Error> {
+  public async updateEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -158,8 +160,8 @@ class PgsqlService {
 
       return {
         records: result.rowCount,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -170,7 +172,7 @@ class PgsqlService {
   }
 
   //* Medium update:
-  public async updateMedium(): Promise<any | Error> {
+  public async updateMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -188,8 +190,8 @@ class PgsqlService {
 
       return {
         records: result.rowCount,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -200,7 +202,7 @@ class PgsqlService {
   }
 
   //* Hard update:
-  public async updateHard(): Promise<any | Error> {
+  public async updateHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(async () => {
         const data = new Date().toISOString().slice(0, 10);
@@ -242,8 +244,8 @@ class PgsqlService {
 
       return {
         // records: result.rowCount,
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -254,7 +256,7 @@ class PgsqlService {
   }
 
   //* Easy delete: delete all records where title = "Junior BackEnd"
-  public async deleteEasy(): Promise<any | Error> {
+  public async deleteEasy(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -265,8 +267,8 @@ class PgsqlService {
       await this.insertCSV();
 
       return {
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -277,7 +279,7 @@ class PgsqlService {
   }
 
   //* Medium delete:
-  public async deleteMedium(): Promise<any | Error> {
+  public async deleteMedium(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -288,8 +290,8 @@ class PgsqlService {
       await this.insertCSV();
 
       return {
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -300,7 +302,7 @@ class PgsqlService {
   }
 
   //* Hard delete:
-  public async deleteHard(): Promise<any | Error> {
+  public async deleteHard(): Promise<QueryResponse | Error> {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
@@ -314,8 +316,8 @@ class PgsqlService {
       await this.insertCSV();
 
       return {
-        memory: memory,
-        time: time,
+        memory,
+        time,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -326,7 +328,7 @@ class PgsqlService {
   }
 
   //* Create tables
-  private async createTables(): Promise<any | Error> {
+  private async createTables(): Promise<void | Error> {
     try {
       await this.conn.query('DROP TABLE IF EXISTS employees');
       await this.conn.query('DROP TABLE IF EXISTS salary');

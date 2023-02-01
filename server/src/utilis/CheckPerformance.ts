@@ -1,7 +1,7 @@
 interface PerformanceResult {
   result: any;
   time: number;
-  memory?: number;
+  memory: number;
 }
 
 const checkPerformance = async (
