@@ -74,37 +74,11 @@ class MongodbService {
   public async insert(amount: number) {
     try {
       const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
-      let values: any[] = [];
-
-      for (let i = 0; i < amount; i++) {
-        if (!salary[i]) break;
-        values.push([
-          salary[i].employee_id,
-          salary[i].salary,
-          salary[i].from_date,
-          salary[i].to_date,
-        ]);
-      }
-
-      let valuesToAdd = values
-        .map(
-          (val) =>
-            '{"employee_id": ' +
-            val[0] +
-            ', "salary": ' +
-            val[1] +
-            ', "from_date": "' +
-            val[2] +
-            '", "to_date": "' +
-            val[3] +
-            '"}',
-        )
-        .join(',');
 
       const { result, memory, time } = await checkPerformance(async () => {
         return await this.conn.db
           .collection('salary')
-          .insertMany(JSON.parse('[' + valuesToAdd + ']'));
+          .insertMany(salary.splice(0, amount));
       });
 
       return {

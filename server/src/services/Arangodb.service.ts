@@ -8,6 +8,29 @@ class ArangodbService {
 
   constructor() {}
 
+  //* Insert data
+  public async insert(amount: number) {
+    try {
+      const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
+
+      const { result, memory, time } = await checkPerformance(async () => {
+        return await this.conn
+          ?.collection('salary')
+          .import(salary.splice(0, amount));
+      });
+
+      return {
+        result: result['insertedCount'],
+        memory: memory,
+        time: time,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+
   public async selectEasy() {
     try {
       const { result, memory, time } = await checkPerformance(async () => {

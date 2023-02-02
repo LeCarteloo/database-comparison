@@ -40,22 +40,15 @@ class PgsqlService {
   public async insert(amount: number): Promise<QueryResponse | Error> {
     try {
       const salary = await csvtojson().fromFile('./src/data/db_salary.csv');
-      let values: any[] = [];
-
-      for (let i = 0; i < amount; i++) {
-        if (!salary[i]) break;
-        values.push([
-          salary[i].employee_id,
-          salary[i].salary,
-          salary[i].from_date,
-          salary[i].to_date,
-        ]);
-      }
 
       const { memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `INSERT INTO salary(employee_id, salary, from_date, to_date) VALUES ${values
-            .map((val) => `(${val[0]}, ${val[1]}, ${val[2]}, ${val[3]})`)
+          `INSERT INTO salary(employee_id, salary, from_date, to_date) VALUES ${salary
+            .splice(0, amount)
+            .map(
+              (val) =>
+                `(${val.employee_id}, ${val.salary}, ${val.from_date}, ${val.to_date})`,
+            )
             .join(',')};`,
         );
       });
@@ -206,24 +199,6 @@ class PgsqlService {
     try {
       const { result, memory, time } = await checkPerformance(async () => {
         const data = new Date().toISOString().slice(0, 10);
-
-        // await this.conn.query('BEGIN');
-        // await this.conn.query(
-        //   `UPDATE titles
-        //   SET to_date = '${data}', title = 'Old worker'
-        //   WHERE to_date > '2018-11-01'
-
-        //   `,
-        // );
-        // await this.conn.query(
-        //   `UPDATE salary
-        //   SET salary = 99999
-        //    WHERE salary > 10001
-
-        //   `,
-        // );
-
-        // await this.conn.query('COMMIT');
 
         await this.conn.query(
           `UPDATE employees

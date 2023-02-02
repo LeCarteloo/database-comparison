@@ -251,17 +251,20 @@ class MysqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `UPDATE titles t, salary s
-          SET s.salary = 11000, t.to_date = CURDATE(), t.title = 'Old worker'
-          WHERE s.salary > 10001 AND t.to_date > '2018-11-01'`,
+          `UPDATE employees
+          JOIN (SELECT e.id
+                FROM salary s
+                JOIN employees e ON e.id = s.employee_id
+                JOIN titles t ON e.id = t.employee_id
+                WHERE s.salary > 2000 AND s.salary < 10000) t ON t.id = employees.id
+          SET hire_date = '2023-01-01';
+          `,
         );
       });
 
       await this.insertCSV();
 
       const [records] = await result;
-
-      console.log(records);
 
       return {
         records: await records.affectedRows,
@@ -306,7 +309,7 @@ class MysqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
+          `DELETE FROM salary WHERE salary > 1500 AND salary < 7500 AND from_date > '2011-01-01' AND to_date < '2020-01-01';`,
         );
       });
 
@@ -331,7 +334,10 @@ class MysqlService {
     try {
       const { result, memory, time } = await checkPerformance(() => {
         return this.conn.query(
-          `DELETE FROM titles WHERE title = 'Junior BackEnd';`,
+          `DELETE FROM 
+          employees 
+        WHERE 
+          id IN (SELECT DISTINCT e.id FROM salary s, employees e, titles t WHERE e.id = s.employee_id AND e.id = t.employee_id  AND s.salary > 2000);`,
         );
       });
 
