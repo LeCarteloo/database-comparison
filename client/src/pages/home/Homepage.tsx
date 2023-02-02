@@ -56,11 +56,11 @@ const Homepage = () => {
       level: undefined,
       isFinished: false,
     },
-    delete: {
+    update: {
       level: undefined,
       isFinished: false,
     },
-    update: {
+    delete: {
       level: undefined,
       isFinished: false,
     },
@@ -462,7 +462,10 @@ const Homepage = () => {
             <div style={{ display: 'flex', gap: '1em', marginTop: '0.5em' }}>
               <S.SmallButton
                 onClick={handleClearStorage}
-                disabled={localStorage.getItem('comparison') === '[]'}
+                disabled={
+                  localStorage.getItem('comparison') === '[]' ||
+                  !localStorage.getItem('comparison')
+                }
               >
                 Clear storage
               </S.SmallButton>
@@ -485,8 +488,9 @@ const Homepage = () => {
           </S.ContentBlock>
           <S.ContentBlock>
             <span style={{ color: '#d4d4d4' }}>
-              Pick operations that you want to perform in (atm) MySQL, MongoDB,
-              Clickhouse, Pgsql:
+              Pick operations that you want to perform in relational databases
+              such as MySQL, Clickhouse, Pgsql and norelational databases such
+              as MongoDB, ArangoDB
             </span>
             <S.SectionList>
               {sections.map((section) => (

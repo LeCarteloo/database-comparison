@@ -21,12 +21,12 @@ const Sidebar = () => {
       label: 'Overview',
       disabled: comparisonData.length === 0,
     },
-    {
-      icon: <Insights />,
-      path: '/insights',
-      label: 'Insights',
-      disabled: comparisonData.length === 0,
-    },
+    // {
+    //   icon: <Insights />,
+    //   path: '/insights',
+    //   label: 'Insights',
+    //   disabled: comparisonData.length === 0,
+    // },
     {
       icon: <Article />,
       path: '/docs',

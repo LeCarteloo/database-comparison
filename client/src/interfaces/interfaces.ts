@@ -4,7 +4,7 @@ interface IBlock {
   img?: string;
 }
 
-type Databases = 'mysql' | 'clickhouse' | 'pgsql' | 'mongodb';
+type Databases = 'mysql' | 'clickhouse' | 'pgsql' | 'mongodb' | 'arango';
 
 interface ComparisonInfo {
   time: number;
@@ -18,6 +18,7 @@ interface DataList {
   clickhouse: ComparisonInfo;
   pgsql: ComparisonInfo;
   mongodb: ComparisonInfo;
+  arango: ComparisonInfo;
 }
 
 interface ComparisonData {

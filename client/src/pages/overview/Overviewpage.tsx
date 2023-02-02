@@ -11,13 +11,12 @@ import {
 } from 'recharts';
 import { useComparisonContext } from '../../context/ComparisonContext';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Overviewpage = () => {
   const { comparisonData } = useComparisonContext();
   const navigate = useNavigate();
-
-  console.log(comparisonData);
+  const [displayType, setDisplayType] = useState('time');
 
   useEffect(() => {
     if (comparisonData.length === 0) {
@@ -25,20 +24,24 @@ const Overviewpage = () => {
     }
   }, []);
 
-  const databases = [
-    { key: 'mysql', name: 'Mysql', color: 'rgb(0, 117, 151)' },
-    { key: 'pgsql', name: 'PostgreSQL', color: 'rgb(0, 100, 151)' },
-    { key: 'clickhouse', name: 'Clickhouse', color: 'rgb(230, 255, 151)' },
-    { key: 'mongodb', name: 'MongoDB', color: 'rgb(111, 207, 151)' },
-  ];
+  const databases = {
+    sql: [
+      { key: 'mysql', name: 'Mysql', color: 'rgb(0, 117, 151)' },
+      { key: 'pgsql', name: 'PostgreSQL', color: 'rgb(0, 100, 151)' },
+      { key: 'clickhouse', name: 'Clickhouse', color: 'rgb(230, 255, 151)' },
+    ],
+    nosql: [
+      { key: 'mongodb', name: 'MongoDB', color: 'rgb(111, 207, 151)' },
+      { key: 'arango', name: 'ArangoDB', color: 'rgb(64, 102, 33)' },
+    ],
+  };
 
-  // Testing
   const inserts = comparisonData.filter((obj) => obj.key.includes('insert'));
   const deletes = comparisonData.filter((obj) => obj.key.includes('delete'));
   const updates = comparisonData.filter((obj) => obj.key.includes('update'));
   const selects = comparisonData.filter((obj) => obj.key.includes('select'));
 
-  const test = {
+  const comparison = {
     inserts: inserts,
     deletes: deletes,
     updates: updates,
@@ -55,67 +58,90 @@ const Overviewpage = () => {
         <h1>Overview</h1>
       </S.Header>
       <S.Results>
-        <S.Legend>
-          {databases.map((db, i) => (
-            <S.LegendItem key={i} color={db.color}>
-              <span></span>
-              <h5>{db.name}</h5>
-            </S.LegendItem>
-          ))}
-        </S.Legend>
-        <S.Charts>
-          {Object.values(test).map((t, i) =>
-            t.length !== 0 ? (
-              <ResponsiveContainer key={i} width="99%" minHeight={300}>
-                <BarChart data={t} margin={{ top: 20 }}>
-                  <XAxis
-                    dataKey="key"
-                    stroke="#fff"
-                    label={{
-                      value: 'operation',
-                      position: 'insideBottomRight',
-                    }}
-                  />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#141432' }}
-                    // labelStyle={{ backgroundColor: 'red' }}
-                    cursor={{ fill: '#1d1d42' }}
-                    // labelFormatter="ms"
-                    formatter={(value, name, props) => [
-                      Number(value).toFixed(4) + ' ms',
-                      name.toString().split('.')[1],
-                    ]}
-                  />
-                  <YAxis
-                    stroke="#fff"
-                    label={{
-                      value: 'ms',
-                      angle: -90,
-                      position: 'insideBottom',
-                    }}
-                  />
-                  {databases.map((db) => (
-                    <Bar
-                      key={db.key}
-                      dataKey={`result.${db.key}.time`}
-                      barSize={100}
-                      fill={db.color}
+        <S.TypeButton
+          isActive={displayType === 'time'}
+          onClick={() => setDisplayType('time')}
+        >
+          Time
+        </S.TypeButton>
+        <S.TypeButton
+          isActive={displayType === 'memory'}
+          onClick={() => setDisplayType('memory')}
+        >
+          Memory
+        </S.TypeButton>
+        {Object.keys(databases).map((dbType, x) => (
+          <>
+            <S.Legend key={x}>
+              {databases[dbType as keyof typeof databases].map((db, i) => (
+                <S.LegendItem key={i} color={db.color}>
+                  <span></span>
+                  <h5>{db.name}</h5>
+                </S.LegendItem>
+              ))}
+            </S.Legend>
+            <S.Charts>
+              {Object.values(comparison).map((t, j) =>
+                t.length !== 0 ? (
+                  <ResponsiveContainer key={j} width="99%" minHeight={300}>
+                    <BarChart
+                      data={t}
+                      margin={{ top: 20 }}
+                      barCategoryGap={'10%'}
                     >
-                      <LabelList
-                        style={{
-                          fill: 'white',
+                      <XAxis
+                        dataKey="key"
+                        stroke="#fff"
+                        label={{
+                          value: 'operation',
+                          position: 'insideBottomRight',
                         }}
-                        dataKey={`result.${db.key}.time`}
-                        formatter={(value: number) => `${value.toFixed(2)}`}
-                        position="top"
                       />
-                    </Bar>
-                  ))}
-                </BarChart>
-              </ResponsiveContainer>
-            ) : null
-          )}
-        </S.Charts>
+                      <Tooltip
+                        contentStyle={{ backgroundColor: '#141432' }}
+                        cursor={{ fill: '#1d1d42' }}
+                        formatter={(value, name) => [
+                          Number(value).toFixed(4) +
+                            ` ${displayType === 'time' ? 'ms' : 'mb'}`,
+                          name.toString().split('.')[2],
+                        ]}
+                      />
+                      <YAxis
+                        stroke="#fff"
+                        label={{
+                          value: 'ms',
+                          angle: -90,
+                          position: 'insideBottom',
+                        }}
+                      />
+                      {databases[dbType as keyof typeof databases].map(
+                        (db, k) => (
+                          <Bar
+                            key={k}
+                            dataKey={`result.${dbType}.${db.key}.${displayType}`}
+                            barSize={100}
+                            fill={db.color}
+                          >
+                            <LabelList
+                              style={{
+                                fill: 'white',
+                              }}
+                              dataKey={`result.${dbType}.${db.key}.${displayType}`}
+                              formatter={(value: number) =>
+                                `${value.toFixed(2)}`
+                              }
+                              position="top"
+                            />
+                          </Bar>
+                        )
+                      )}
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : null
+              )}
+            </S.Charts>
+          </>
+        ))}
       </S.Results>
     </motion.div>
   );
