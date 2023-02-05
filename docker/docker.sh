@@ -1,6 +1,6 @@
 #!/bin/bash
-source docker/.env
-echo $COMPOSE_PROJECT_NAME
+echo zespolowe
+
 
 cd docker
 docker-compose pull
