@@ -1,6 +1,7 @@
 #!/bin/bash
 echo zespolowe
 
+
 cd docker
 docker-compose pull
 docker-compose up -d

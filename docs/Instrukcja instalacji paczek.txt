@@ -1,0 +1,11 @@
+Uruchom terminal w miejscu skąd hostowany jest strona php (np. xampp/htdocs)
+
+W terminalu wpisz:
+-composer require predis/predis
+-composer require mongodb/mongodb
+-composer require smi2/phpclickhouse
+
+Dla postgres w pliku php.ini odkomentuj ";extension=pgsql" usuwając ";"
+
+Dla mongodb w folderze "xampp/php/ext" dodaj bibliotekę "php_mongodb.dll" (należy ją pobrać z internetu),
+	a następnie w pliku php.ini dodaj linijkę "extension=mongodb" po wyżej wymienionym "extension=pgsql"

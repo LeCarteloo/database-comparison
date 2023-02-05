@@ -1,0 +1,32 @@
+@import url('https://cdn.syncfusion.com/ej2/material.css');
+
+code[class*='language-'],
+pre[class*='language-'] {
+  background-color: #1d1d42 !important;
+}
+
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  accent-color: #524eee;
+}
+
+html,
+body {
+  /* height: 100%; */
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  background-color: #1d1d42;
+}
