@@ -1,0 +1,45 @@
+version: '2.2'
+
+services:
+  mysql:
+    image: mysql/mysql-server:latest
+    container_name: zespolowe_mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mysql_base
+      - MYSQL_PASSWORD=root
+      - MYSQL_USER=root
+    ports:
+      - 3307:3306
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+
+  mongo:
+    image: mongo
+    container_name: zespolowe_mongo
+    ports:
+      - 8081:27017
+
+  arango:
+    image: arangodb
+    container_name: zespolowe_arango
+    environment:
+      ARANGO_ROOT_USERNAME: root
+      ARANGO_ROOT_PASSWORD: root
+    ports:
+      - 8529:8529
+
+  postgres:
+    image: postgres
+    container_name: zespolowe_postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: pg_base
+
+  clickhouse:
+    image: yandex/clickhouse-server
+    container_name: zespolowe_clickhouse
+    ports:
+      - '8123:8123'
