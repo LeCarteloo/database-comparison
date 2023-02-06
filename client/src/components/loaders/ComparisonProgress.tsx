@@ -5,6 +5,7 @@ interface ComparisonProgressProps {
   items: {
     name: string;
     isLoading: boolean;
+    isError?: boolean;
   }[];
 }
 
@@ -19,7 +20,7 @@ const ComparisonProgress = ({ items }: ComparisonProgressProps) => {
           transition={{ duration: 0.4 + i * 0.1, ease: 'easeInOut' }}
         >
           <div>
-            <CircleLoader isLoading={item.isLoading} />
+            <CircleLoader isLoading={item.isLoading} isError={item.isError} />
           </div>
           <span>{item.name}</span>
         </S.LoadingItem>

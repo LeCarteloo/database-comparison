@@ -1,6 +1,6 @@
 import { ArangoConnection } from '@/config/databases';
 import checkPerformance from '@/utilis/CheckPerformance';
-import { Database, aql } from 'arangojs';
+import { aql, Database } from 'arangojs';
 import csvtojson from 'csvtojson';
 
 class ArangodbService {
@@ -18,6 +18,8 @@ class ArangodbService {
           ?.collection('salary')
           .import(salary.splice(0, amount));
       });
+
+      await this.insertCSV();
 
       return {
         result: result['insertedCount'],
@@ -116,6 +118,8 @@ class ArangodbService {
         return await cursor.all();
       });
 
+      await this.insertCSV();
+
       return {
         records: result.length,
         memory,
@@ -143,6 +147,8 @@ class ArangodbService {
         return await cursor.all();
       });
 
+      await this.insertCSV();
+
       return {
         records: result.length,
         memory,
@@ -168,6 +174,8 @@ class ArangodbService {
 
         return await cursor.all();
       });
+
+      await this.insertCSV();
 
       return {
         records: result.length,
@@ -267,8 +275,6 @@ class ArangodbService {
 
   public async insertCSV() {
     try {
-      //   await this.createCollections();
-
       const employees = await csvtojson().fromFile(
         './src/data/db_employees.csv',
       );
@@ -277,7 +283,7 @@ class ArangodbService {
 
       const collections = await this.conn?.collections();
 
-      salary = salary.map((salar) => ({
+      salary = salary.map((salar: any) => ({
         ...salar,
         salary: parseInt(salar.salary),
       }));

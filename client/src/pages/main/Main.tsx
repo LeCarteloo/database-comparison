@@ -1,35 +1,45 @@
-import { CircleLoader, Sidebar } from '../../components';
-import * as S from './Main.styled';
-import { Routes, Route } from 'react-router-dom';
-import { Homepage, Insightspage, Overviewpage } from '../../pages';
+import { Close } from '@mui/icons-material';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { ComparisonData } from '../../interfaces/interfaces';
+import { Route, Routes } from 'react-router-dom';
+import { CircleLoader, Sidebar } from '../../components';
 import { ComparisonProvider } from '../../context/ComparisonContext';
 import { StorageProvider } from '../../context/StorageContext';
+import { ComparisonData } from '../../interfaces/interfaces';
+import { Homepage, Insightspage, Overviewpage } from '../../pages';
 import DocsPage from '../docs/DocsPage';
-import axios from 'axios';
+import * as S from './Main.styled';
 
 const Main = () => {
   const [comparisonData, setComparisonData] = useState<ComparisonData[]>([]);
   const [useStorage, setUseStorage] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
+
     const prepareDatabase = async () => {
       try {
         const response = await axios.post('http://localhost:3000/api/csv', {
           signal: controller.signal,
         });
+
+        console.log(response.status);
+
+        localStorage.setItem('firstRun', 'true');
         setIsLoading(false);
       } catch (error) {
-        if (error instanceof Error) {
-          console.error(error);
-        }
+        setIsError(true);
+        console.error(error);
       }
     };
 
-    prepareDatabase();
+    if (!localStorage.getItem('firstRun')) {
+      prepareDatabase();
+    } else {
+      setIsLoading(false);
+    }
 
     const comparison = localStorage.getItem('comparison');
 
@@ -42,6 +52,24 @@ const Main = () => {
       controller.abort();
     };
   }, []);
+
+  if (isError) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          height: '100vh',
+        }}
+      >
+        <Close color="error" style={{ fontSize: '50px' }} />
+        <p style={{ marginTop: '16px' }}>No connection with the server...</p>
+      </div>
+    );
+  }
 
   if (useStorage) {
     localStorage.setItem('comparison', JSON.stringify(comparisonData));
@@ -68,7 +96,9 @@ const Main = () => {
             }}
           >
             <CircleLoader isLoading={true} />
-            Preparing database for testing
+            <p style={{ marginTop: '16px' }}>
+              Creating database structure and populating it...
+            </p>
           </div>
         ) : (
           <>
