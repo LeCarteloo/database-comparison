@@ -1,8 +1,8 @@
-import * as S from './Docspage.styled';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
+import { useEffect } from 'react';
+import * as S from './Docspage.styled';
 
 const DocsPage = () => {
   useEffect(() => {
@@ -13,9 +13,7 @@ const DocsPage = () => {
     {
       id: 'Insert',
       title: '1. Insert',
-      desc: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
-      dolore laudantium odio facilis alias distinctio, voluptatum minima
-      facere. Nostrum, fuga!`,
+      desc: ``,
       subSections: [
         {
           subTitle: 'All',
@@ -48,9 +46,7 @@ const DocsPage = () => {
     {
       id: 'select',
       title: '2. Select',
-      desc: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
-      dolore laudantium odio facilis alias distinctio, voluptatum minima
-      facere. Nostrum, fuga!`,
+      desc: ``,
       subSections: [
         {
           subTitle: 'Easy',
@@ -73,25 +69,6 @@ const DocsPage = () => {
         },
         {
           subTitle: 'Medium',
-          queries: [
-            {
-              name: 'Mysql, Pgsql, ClickHouse',
-              query: `SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
-            },
-            {
-              name: 'MongoDB',
-              query: `this.conn.db.collection('salary').find({ salary: { $gte: 5000 } }).toArray();`,
-            },
-            {
-              name: 'ArangoDB',
-              query: `FOR doc IN salary
-              FILTER doc.salary >= 5000
-              RETURN doc`,
-            },
-          ],
-        },
-        {
-          subTitle: 'Hard',
           queries: [
             {
               name: 'Mysql, Pgsql',
@@ -173,14 +150,31 @@ const DocsPage = () => {
             },
           ],
         },
+        {
+          subTitle: 'Hard',
+          queries: [
+            {
+              name: 'Mysql, Pgsql, ClickHouse',
+              query: `SELECT * FROM salary AS s, employees AS e, titles AS t WHERE e.id = t.employee_id AND title LIKE '%BackEnd%' AND e.id = s.employee_id`,
+            },
+            {
+              name: 'MongoDB',
+              query: `this.conn.db.collection('salary').find({ salary: { $gte: 5000 } }).toArray();`,
+            },
+            {
+              name: 'ArangoDB',
+              query: `FOR doc IN salary
+              FILTER doc.salary >= 5000
+              RETURN doc`,
+            },
+          ],
+        },
       ],
     },
     {
       id: 'update',
       title: '3. Update',
-      desc: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
-        dolore laudantium odio facilis alias distinctio, voluptatum minima
-        facere. Nostrum, fuga!`,
+      desc: ``,
       subSections: [
         {
           subTitle: 'Easy',
@@ -319,9 +313,7 @@ const DocsPage = () => {
     {
       id: 'delete',
       title: '4. Delete',
-      desc: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
-        dolore laudantium odio facilis alias distinctio, voluptatum minima
-        facere. Nostrum, fuga!`,
+      desc: ``,
       subSections: [
         {
           subTitle: 'Easy',
@@ -369,12 +361,11 @@ const DocsPage = () => {
             },
             {
               name: 'MongoDB',
-              query: `this.conn.db.collection('salary').deleteMany({ salary: { $gte: 5000 } })`,
+              query: `this.conn.db.collection('salary').deleteMany({});`,
             },
             {
               name: 'ArangoDB',
               query: `FOR doc IN salary
-              FILTER doc.salary >= 5000
               REMOVE doc IN salary
               RETURN doc`,
             },
@@ -410,11 +401,12 @@ const DocsPage = () => {
             },
             {
               name: 'MongoDB',
-              query: `this.conn.db.collection('salary').deleteMany({});`,
+              query: `this.conn.db.collection('salary').deleteMany({ salary: { $gte: 5000 } })`,
             },
             {
               name: 'ArangoDB',
               query: `FOR doc IN salary
+              FILTER doc.salary >= 5000
               REMOVE doc IN salary
               RETURN doc`,
             },
@@ -457,8 +449,8 @@ const DocsPage = () => {
       </S.Header>
       <S.ContentBlock>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
-          dolore laudantium odio facilis.
+          {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
+          dolore laudantium odio facilis. */}
         </p>
         <div style={{ margin: '1em 0' }}>
           <div>Table of Contents</div>
